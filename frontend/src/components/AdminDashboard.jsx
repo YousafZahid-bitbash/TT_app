@@ -9,7 +9,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     // Fetch users and their brands from the API
-    axios.get('http://127.0.0.1:8000/admin/users')  // Adjust URL if deployed differently
+    axios.get('/api/admin/users')  // Adjust URL if deployed differently
       .then(response => {
         setUsers(response.data);  // Store the data in the state
       })

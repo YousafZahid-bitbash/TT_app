@@ -54,7 +54,7 @@ const AdminShopPerformance = () => {
         const formattedEndOfMonth = formatDate(currentDate);
 
         // Fetch performance data (GMV, flash sales, etc.) for yesterday
-        const yesterdayPerformanceResponse = await axios.get('http://127.0.0.1:8000/shop/performance', {
+        const yesterdayPerformanceResponse = await axios.get('/api/shop/performance', {
           params: {
             start_time: formattedYesterday,
             end_time: formattedYesterday,
@@ -65,7 +65,7 @@ const AdminShopPerformance = () => {
         });
 
         // Fetch performance data (GMV, flash sales, etc.) for the current week
-        const currentWeekPerformanceResponse = await axios.get('http://127.0.0.1:8000/shop/performance', {
+        const currentWeekPerformanceResponse = await axios.get('/api/shop/performance', {
           params: {
             start_time: startOfWeek,
             end_time: formattedEndOfWeek,
@@ -76,7 +76,7 @@ const AdminShopPerformance = () => {
         });
 
         // Fetch performance data (GMV, flash sales, etc.) for the current month
-        const monthToDatePerformanceResponse = await axios.get('http://127.0.0.1:8000/shop/performance', {
+        const monthToDatePerformanceResponse = await axios.get('/api/shop/performance', {
           params: {
             start_time: startOfMonth,
             end_time: formattedEndOfMonth,
@@ -87,7 +87,7 @@ const AdminShopPerformance = () => {
         });
 
         // Fetch flash sales performance data for the periods
-        const yesterdayflashsales = await axios.get('http://127.0.0.1:8000/flash_sales_performance', {
+        const yesterdayflashsales = await axios.get('/api/flash_sales_performance', {
           params: {
             start_time: formattedYesterday,
             end_time: formattedYesterday,
@@ -97,7 +97,7 @@ const AdminShopPerformance = () => {
           }
         });
 
-        const currentWeekflashsales = await axios.get('http://127.0.0.1:8000/flash_sales_performance', {
+        const currentWeekflashsales = await axios.get('/api/flash_sales_performance', {
           params: {
             start_time: startOfWeek,
             end_time: formattedEndOfWeek,
@@ -107,7 +107,7 @@ const AdminShopPerformance = () => {
           }
         });
 
-        const monthToDateflashsales = await axios.get('http://127.0.0.1:8000/flash_sales_performance', {
+        const monthToDateflashsales = await axios.get('/api/flash_sales_performance', {
           params: {
             start_time: startOfMonth,
             end_time: formattedEndOfMonth,

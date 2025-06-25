@@ -52,7 +52,7 @@ const AdminCreatorPerformance = () => {
         const formattedEndOfMonth = formatDate(currentDate);
 
         // Fetch creator performance data for yesterday
-        const yesterdayPerformanceResponse = await axios.get('http://127.0.0.1:8000/top_performing_creators', {
+        const yesterdayPerformanceResponse = await axios.get('/api/top_performing_creators', {
           params: {
             start_time: formattedYesterday,
             end_time: formattedYesterday,
@@ -63,7 +63,7 @@ const AdminCreatorPerformance = () => {
         });
 
         // Fetch creator performance data for the current week
-        const currentWeekPerformanceResponse = await axios.get('http://127.0.0.1:8000/top_performing_creators', {
+        const currentWeekPerformanceResponse = await axios.get('/api/top_performing_creators', {
           params: {
             start_time: startOfWeek,
             end_time: formattedEndOfWeek,
@@ -74,7 +74,7 @@ const AdminCreatorPerformance = () => {
         });
 
         // Fetch creator performance data for the current month
-        const monthToDatePerformanceResponse = await axios.get('http://127.0.0.1:8000/top_performing_creators', {
+        const monthToDatePerformanceResponse = await axios.get('/api/top_performing_creators', {
           params: {
             start_time: startOfMonth,
             end_time: formattedEndOfMonth,

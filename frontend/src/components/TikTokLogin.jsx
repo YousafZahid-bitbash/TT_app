@@ -10,7 +10,7 @@
 //   const handleLoginClick = async () => {
 //     try {
 //       // Redirect to the backend to start TikTok OAuth process
-//       const response = await axios.get('http://127.0.0.1:8000/tiktok/login');
+//       const response = await axios.get('/api/tiktok/login');
 //       // This will redirect the user to TikTok's OAuth page
 //       window.location.href = response.data.redirect_url; // Get the URL to redirect to TikTok OAuth page
 //     } catch (error) {
@@ -40,7 +40,7 @@ const TikTokShopOAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const API_BASE = 'http://127.0.0.1:8000';
+  const API_BASE = '/api';
 
   // Get authorization URL
   const getAuthUrl = async () => {
