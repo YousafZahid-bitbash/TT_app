@@ -1,0 +1,98 @@
+/* src/components/ShopPerformance.css */
+
+/* Container for all cards */
+.cards-container {
+  display: flex;
+  justify-content: center; /* Center cards horizontally */
+  margin-top: 30px;
+  margin-left: 50px;
+  gap: 20px;
+  flex-wrap: wrap; /* Allows cards to wrap on smaller screens */
+}
+
+/* Parent card styling for Daily Performance */
+.card {
+  background-color: white;
+  padding: 30px;
+  width: 100%;
+  max-width: 900px; /* Optional max-width for parent card */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+/* Heading for the parent card (Daily Performance) */
+.card h3 {
+  font-size: 24px;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center; /* Center the title */
+}
+
+/* Container for the child cards (GMV, Orders, Units Sold) */
+.card-data {
+  display: flex;
+  justify-content: space-between; /* Distribute child cards evenly */
+  gap: 20px; /* Space between cards */
+  flex-wrap: nowrap; /* Ensure cards stay in a single row */
+}
+
+/* Styling for individual child cards (GMV, Orders, Units Sold) */
+.card > .card {
+  background-color: white;
+  padding: 20px;
+  padding-left: 30px;
+  width: 200px; /* Fixed width for each card */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center; /* Center text inside each card */
+}
+
+/* Hover effect for individual cards */
+.card > .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Card headings for GMV, Orders, Units Sold */
+.card > .card h3 {
+  font-size: 18px;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+/* Styling for data inside each child card */
+.card-data p {
+  font-size: 16px;
+  color: #555;
+  margin: 5px 0;
+}
+
+/* Border between data inside each card */
+.data-border {
+  border-bottom: 1px solid #ddd;
+  margin: 10px 0;
+}
+
+/* Remove last border in each child card */
+.card-data p:last-child {
+  margin-bottom: 0;
+}
+
+.card-data .data-border:last-child {
+  display: none;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .card-data {
+    flex-direction: column; /* Stack the cards vertically on small screens */
+    align-items: center; /* Center the cards vertically */
+  }
+
+  .card > .card {
+    width: 90%; /* Full width for child cards on small screens */
+    margin-bottom: 20px; /* Space between cards */
+  }
+}

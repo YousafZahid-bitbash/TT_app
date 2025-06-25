@@ -1,0 +1,13 @@
+/* src/components/UserLayout.css */
+.user-layout {
+    display: flex;
+    height: 100%; /* Ensure the layout takes full height */
+  }
+  
+  .content {
+    flex-grow: 1; /* Takes the remaining space */
+    padding: 20px;
+    background-color: #f4f4f4;
+    overflow-y: auto; /* For scrolling if content exceeds the height */
+    height: 100%;  /* Ensure content stretches to fill available height */
+  }

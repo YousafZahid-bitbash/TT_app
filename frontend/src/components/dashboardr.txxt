@@ -1,0 +1,423 @@
+import React, { useEffect, useState } from 'react';
+
+const Dashboard = () => {
+  const [dashboardData, setDashboardData] = useState({
+    yesterday: {
+      totalGmv: 5200,
+      tiktokCampaignOutcomes: 4800,
+      refundRate: 5.2,
+      flashSalesPerformance: 1200,
+      gmvPerVideo: 185,
+      topPerformingCreators: 12,
+      newContentPerCreator: 3.4,
+      affiliateJoinRate: 68
+    },
+    currentWeek: {
+      totalGmv: 36400,
+      tiktokCampaignOutcomes: 32800,
+      refundRate: 4.8,
+      flashSalesPerformance: 8200,
+      gmvPerVideo: 220,
+      topPerformingCreators: 45,
+      newContentPerCreator: 4.2,
+      affiliateJoinRate: 72
+    },
+    monthToDate: {
+      totalGmv: 156000,
+      tiktokCampaignOutcomes: 142000,
+      refundRate: 5.1,
+      flashSalesPerformance: 38000,
+      gmvPerVideo: 195,
+      topPerformingCreators: 180,
+      newContentPerCreator: 3.8,
+      affiliateJoinRate: 74
+    }
+  });
+
+  useEffect(() => {
+    // Simulate fetching data
+    setTimeout(() => {
+      setDashboardData({
+        yesterday: {
+          totalGmv: 5200,
+          tiktokCampaignOutcomes: 4800,
+          refundRate: 5.2,
+          flashSalesPerformance: 1200,
+          gmvPerVideo: 185,
+          topPerformingCreators: 12,
+          newContentPerCreator: 3.4,
+          affiliateJoinRate: 68
+        },
+        currentWeek: {
+          totalGmv: 36400,
+          tiktokCampaignOutcomes: 32800,
+          refundRate: 4.8,
+          flashSalesPerformance: 8200,
+          gmvPerVideo: 220,
+          topPerformingCreators: 45,
+          newContentPerCreator: 4.2,
+          affiliateJoinRate: 72
+        },
+        monthToDate: {
+          totalGmv: 156000,
+          tiktokCampaignOutcomes: 142000,
+          refundRate: 5.1,
+          flashSalesPerformance: 38000,
+          gmvPerVideo: 195,
+          topPerformingCreators: 180,
+          newContentPerCreator: 3.8,
+          affiliateJoinRate: 74
+        }
+      });
+    }, 1000);
+  }, []);
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2
+    }).format(amount);
+  };
+
+  const calculatePercentage = (value, total) => {
+    if (total === 0) return '0.0%';
+    return ((value / total) * 100).toFixed(1) + '%';
+  };
+
+  const formatPercentage = (value) => {
+    return value.toFixed(1) + '%';
+  };
+
+  const formatNumber = (value) => {
+    return value.toLocaleString();
+  };
+
+  const renderTable = (data, title, period, bgColor) => (
+    <div className="analytics-table">
+      <div className={`table-header ${bgColor}`}>
+        <h3>{title}</h3>
+        <span className="period">{period}</span>
+      </div>
+      <div className="table-content">
+        <div className="metric-row">
+          <span className="metric-label">TOTAL GMV</span>
+          <span className="metric-value">{formatCurrency(data.totalGmv)}</span>
+        </div>
+        <div className="metric-row">
+          <span className="metric-label">TIKTOK SHOP CAMPAIGN OUTCOMES</span>
+          <span className="metric-value">{formatCurrency(data.tiktokCampaignOutcomes)}</span>
+          <span className="metric-percentage">{calculatePercentage(data.tiktokCampaignOutcomes, data.totalGmv)}</span>
+        </div>
+        <div className="metric-row">
+          <span className="metric-label">REFUND RATE & TRENDS</span>
+          <span className="metric-value">{formatPercentage(data.refundRate)}</span>
+        </div>
+        <div className="metric-row">
+          <span className="metric-label">FLASH SALES PERFORMANCE</span>
+          <span className="metric-value">{formatCurrency(data.flashSalesPerformance)}</span>
+          <span className="metric-percentage">{calculatePercentage(data.flashSalesPerformance, data.totalGmv)}</span>
+        </div>
+        <div className="metric-row">
+          <span className="metric-label">GMV PER VIDEO/CONTENT</span>
+          <span className="metric-value">{formatCurrency(data.gmvPerVideo)}</span>
+        </div>
+        <div className="metric-row">
+          <span className="metric-label">TOP-PERFORMING CREATORS</span>
+          <span className="metric-value">{formatNumber(data.topPerformingCreators)}</span>
+        </div>
+        <div className="metric-row">
+          <span className="metric-label">NEW CONTENT PER CREATOR</span>
+          <span className="metric-value">{data.newContentPerCreator.toFixed(1)}</span>
+        </div>
+        <div className="metric-row">
+          <span className="metric-label">AFFILIATE JOIN RATE & CONVERSION</span>
+          <span className="metric-value">{formatPercentage(data.affiliateJoinRate)}</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <h1>Analytics Dashboard</h1>
+        <div className="time-filter">
+          <button className="filter-btn active">Yesterday / Current Week / Month to date</button>
+          <button className="fixed-expenses-btn">Fixed Expenses</button>
+        </div>
+      </div>
+      
+      <div className="tables-container">
+        {renderTable(
+          dashboardData.yesterday, 
+          'Yesterday', 
+          '27 May 2025', 
+          'header-blue'
+        )}
+        {renderTable(
+          dashboardData.currentWeek, 
+          'Current Week', 
+          '26 - 28 May 2025', 
+          'header-green'
+        )}
+        {renderTable(
+          dashboardData.monthToDate, 
+          'Month to date', 
+          '1 - 28 May 2025', 
+          'header-red'
+        )}
+      </div>
+
+      <div className="product-table-section">
+        <table className="product-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Retail Price</th>
+              <th>Units Sold (Quantity)</th>
+              <th>Sample (Quantity)</th>
+              <th>Total Units (Sold & Sample)</th>
+              <th>GMV</th>
+              <th>Fulfillment & Shipping (FBT & FBS)</th>
+              <th>Total COGS (Sold & Samples)</th>
+              <th>Affiliate Commission</th>
+              <th>% Tax Refunds</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colSpan="10" className="no-data">
+                <div className="empty-state">
+                  <div className="empty-icon">📦</div>
+                  <p>No orders found on 27 May 2025</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
+
+// Add this CSS to your Dashboard.css file or include as a style tag
+const styles = `
+.dashboard-container {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  color: #333;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.time-filter {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-btn, .fixed-expenses-btn {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.filter-btn.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.fixed-expenses-btn {
+  background: #ff6b35;
+  color: white;
+  border-color: #ff6b35;
+}
+
+.tables-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.analytics-table {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.table-header {
+  padding: 16px 20px;
+  color: white;
+  font-weight: 600;
+}
+
+.header-blue {
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+}
+
+.header-green {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.header-red {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.table-header h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+}
+
+.period {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.table-content {
+  padding: 20px;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.metric-row:last-child {
+  border-bottom: none;
+}
+
+.metric-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  flex: 1;
+}
+
+.metric-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-right: 10px;
+}
+
+.metric-percentage {
+  font-size: 12px;
+  color: #888;
+  min-width: 50px;
+  text-align: right;
+}
+
+.product-table-section {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product-table th {
+  background: #f8f9fa;
+  padding: 12px 8px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.product-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 12px;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px !important;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .tables-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .product-table {
+    font-size: 10px;
+  }
+  
+  .product-table th,
+  .product-table td {
+    padding: 8px 4px;
+  }
+}
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = styles;
+  document.head.appendChild(styleSheet);
+}
+
+
+
+
+
+
+// =========================================================================
