@@ -1,5 +1,5 @@
 // export default Dashboard;
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import "./Dashboard.css";
 import DatePickerCard from './Datepicker';
@@ -9,7 +9,7 @@ const Dashboard = () => {
   const [currentWeekData, setCurrentWeekData] = useState({});
   const [monthToDateData, setMonthToDateData] = useState({});
   const [dates, setDates] = useState({ startDate: '', endDate: '' });
-  const [data, setData] = useState(null);
+  // const [data, setData] = useState(null);
   const [customRangeData, setCustomRangeData] = useState([]);
   const [loading, setLoading] = useState(false);
   // const [selectedPeriods, setSelectedPeriods] = useState([]);
@@ -52,7 +52,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const periods = generateMonthPeriods(dates.startDate, dates.endDate);
-      setSelectedPeriods(periods);
+      
       
       const periodData = await Promise.all(
         periods.map(async (period) => {
@@ -145,21 +145,21 @@ const Dashboard = () => {
     }
   };
 
-  const fetchPerformance = async () => {
-    try {
-      const response = await axios.get('/api/shop/performance', {
-        params: {
-          start_time: dates.startDate,
-          end_time: dates.endDate,
-          page_size: 10,
-          page_no: 1,
-        },
-      });
-      setData(response.data);
-    } catch (error) {
-      console.error('API call error:', error);
-    }
-  };
+  // const fetchPerformance = async () => {
+  //   try {
+  //     const response = await axios.get('/api/shop/performance', {
+  //       params: {
+  //         start_time: dates.startDate,
+  //         end_time: dates.endDate,
+  //         page_size: 10,
+  //         page_no: 1,
+  //       },
+  //     });
+  //     setData(response.data);
+  //   } catch (error) {
+  //     console.error('API call error:', error);
+  //   }
+  // };
 
   // Helper function to format dates as 'YYYY-MM-DD'
   const formatDate = (date) => {
@@ -170,30 +170,29 @@ const Dashboard = () => {
   };
 
   // Helper function to get the start of the current week (Monday)
-  const getStartOfWeek = (date) => {
+  const getStartOfWeek = useCallback((date) => {
     const startOfWeek = new Date(date);
     const day = startOfWeek.getDay();
     const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
     startOfWeek.setDate(diff);
     return formatDate(startOfWeek);
-  };
-
-  // Helper function to get the start of the current month
-  const getStartOfMonth = (date) => {
+  }, []);
+  
+  const getStartOfMonth = useCallback((date) => {
     const startOfMonth = new Date(date);
     startOfMonth.setDate(1);
     return formatDate(startOfMonth);
-  };
+  }, []);
 
   // Calculate percentage change
-  const calculatePercentageChange = (current, previous) => {
-    if (previous === 0) {
-      return current > 0 ? '+100.0%' : '0.0%';
-    }
-    const change = ((current - previous) / previous) * 100;
-    const sign = change >= 0 ? '+' : '';
-    return `${sign}${change.toFixed(1)}%`;
-  };
+  // const calculatePercentageChange = (current, previous) => {
+  //   if (previous === 0) {
+  //     return current > 0 ? '+100.0%' : '0.0%';
+  //   }
+  //   const change = ((current - previous) / previous) * 100;
+  //   const sign = change >= 0 ? '+' : '';
+  //   return `${sign}${change.toFixed(1)}%`;
+  // };
 
   // Calculate totals for the custom range table
   const calculateTotals = () => {
@@ -394,7 +393,7 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, []);
+  }, [getStartOfMonth, getStartOfWeek]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {

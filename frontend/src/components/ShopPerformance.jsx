@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 // import { ShoppingCart, TrendingUp, Package, AlertCircle, Calendar, DollarSign } from 'lucide-react';
 import axios from 'axios';
 const ShopPerformance = () => {
   const [yesterdayData, setYesterdayData] = useState({});
-   const [currentWeekData, setCurrentWeekData] = useState({});
-   const [monthToDateData, setMonthToDateData] = useState({});
-    const [dates, setDate] = useState({ startDate: '', endDate: '' });
+  const [currentWeekData, setCurrentWeekData] = useState({});
+  const [monthToDateData, setMonthToDateData] = useState({});
   //  const [data, setData] = useState(null);
  
   //  const fetchPerformance = async () => {
@@ -33,38 +32,22 @@ const ShopPerformance = () => {
    };
  
    // Helper function to get the start of the current week (Monday)
-   const getStartOfWeek = (date) => {
-     const startOfWeek = new Date(date);
-     const day = startOfWeek.getDay();
-     const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Adjust if it's Sunday
-     startOfWeek.setDate(diff);
+   const getStartOfWeek = useCallback((date) => {
+    const startOfWeek = new Date(date);
+    const day = startOfWeek.getDay();
+    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Adjust if it's Sunday
+    startOfWeek.setDate(diff);
+    return formatDate(startOfWeek);
+  }, []);
   
-     // Set the start of the week in the dates state
-     const formattedStartOfWeek = formatDate(startOfWeek);
-     setDate((prevState) => ({
-       ...prevState,
-       startDate: formattedStartOfWeek,
-       endDate: formatDate(new Date())  // Set the end date as today (current day)
-     }));
-  
-     return formattedStartOfWeek;
-   };
+  const getStartOfMonth = useCallback((date) => {
+    const startOfMonth = new Date(date);
+    startOfMonth.setDate(1); // Set the date to the 1st of the month
+    return formatDate(startOfMonth);
+  }, []);
   
    // Helper function to get the start of the current month
-   const getStartOfMonth = (date) => {
-     const startOfMonth = new Date(date);
-     startOfMonth.setDate(1); // Set the date to the 1st of the month
-  
-     // Set the start of the month in the dates state
-     const formattedStartOfMonth = formatDate(startOfMonth);
-     setDate((prevState) => ({
-       ...prevState,
-       startDate: formattedStartOfMonth,
-       endDate: formatDate(new Date())  // Set the end date as today (current day)
-     }));
    
-       return formattedStartOfMonth;
-     };
    
 
    
@@ -147,12 +130,12 @@ const ShopPerformance = () => {
          });
  
          const compain = await axios.get('/api/shop/performance', {
-           params: {
-             start_time: dates.startDate,
-             end_time: dates.endDate,
-             page_size: 10,
-             page_no: 1
-           }
+          params: {
+            start_time: getStartOfMonth(new Date()),
+            end_time: formattedEndOfMonth,
+            page_size: 10,
+            page_no: 1
+          }
          });
          const dailyRefundrate = await axios.get('/api//calculate_refund_rate', {
            params: {
@@ -206,8 +189,8 @@ const ShopPerformance = () => {
        }
      };
  
-     fetchData();
-   }, []);
+    fetchData();
+}, [getStartOfMonth, getStartOfWeek]);
  
    const formatCurrency = (amount) => {
      return new Intl.NumberFormat('en-US', {
@@ -217,10 +200,10 @@ const ShopPerformance = () => {
      }).format(amount);
    };
  
-   const calculatePercentage = (value, total) => {
-     if (total === 0) return '0.0%';
-     return ((value / total) * 100).toFixed(1) + '%';
-   };
+  //  const calculatePercentage = (value, total) => {
+  //    if (total === 0) return '0.0%';
+  //    return ((value / total) * 100).toFixed(1) + '%';
+  //  };
  
    const renderTable = (data, title, period, bgColor) => (
      <div className="analytics-table">

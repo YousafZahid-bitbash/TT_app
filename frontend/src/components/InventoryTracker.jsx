@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './InventoryTracker.css';
 
 const InventoryTracker = () => {
@@ -11,16 +11,7 @@ const InventoryTracker = () => {
   const API_BASE = 'api';
 
   // Fetch brands on component mount
-  useEffect(() => {
-    fetchBrands();
-  }, []);
-
-  // Fetch SKUs when brand changes or source changes
-  useEffect(() => {
-    if (selectedBrand) {
-      fetchSkus(selectedBrand);
-    }
-  }, [selectedBrand, source]);
+  
 
   const fetchBrands = async () => {
     try {
@@ -37,7 +28,8 @@ const InventoryTracker = () => {
     }
   };
 
-  const fetchSkus = async (brandId) => {
+
+  const fetchSkus = useCallback(async (brandId) => {
     setLoading(true);
     try {
       let url;
@@ -72,7 +64,21 @@ const InventoryTracker = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [source]);
+
+  // Fetch brands on component mount
+  
+  useEffect(() => {
+    fetchBrands();
+  }, []);
+
+  // Fetch SKUs when brand changes or source changes
+  useEffect(() => {
+    if (selectedBrand) {
+      fetchSkus(selectedBrand);
+    }
+  }, [selectedBrand, source, fetchSkus]);
+
 
   const updateStock = async (skuId, newStock) => {
     try {

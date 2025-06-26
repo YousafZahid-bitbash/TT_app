@@ -10,7 +10,7 @@ const SampleDistributionLog = () => {
   const [endDate, setEndDate] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [pageSize, setPageSize] = useState(20);
-  // const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [updatingStatus, setUpdatingStatus] = useState({});
 
   // Set default dates (last 30 days)
@@ -33,6 +33,7 @@ const SampleDistributionLog = () => {
     setError(null);
 
     try {
+      setCurrentPage(1);
       const params = new URLSearchParams({
         start_date: startDate,
         end_date: endDate,

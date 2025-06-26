@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import "./ShopDetailPage.css";
@@ -46,19 +46,19 @@ const ShopDetailPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const getStartOfWeek = (date) => {
+  const getStartOfWeek = useCallback((date) => {
     const startOfWeek = new Date(date);
     const day = startOfWeek.getDay();
     const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Adjust if it's Sunday
     startOfWeek.setDate(diff);
     return formatDate(startOfWeek);
-  };
-
-  const getStartOfMonth = (date) => {
+  }, []);
+  
+  const getStartOfMonth = useCallback((date) => {
     const startOfMonth = new Date(date);
     startOfMonth.setDate(1); // Set the date to the 1st of the month
     return formatDate(startOfMonth);
-  };
+  }, []);
   
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
@@ -131,7 +131,7 @@ const ShopDetailPage = () => {
     };
 
     fetchData();
-  }, [brandId, dates]);
+  }, [brandId, getStartOfMonth, getStartOfWeek]);
 
   const renderTable = (data, title, period, bgColor) => (
     <div className="analytics-table">

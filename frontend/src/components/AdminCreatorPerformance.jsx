@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback} from 'react';
 import { useParams } from 'react-router-dom';  // Get the brandId from the URL
 import axios from 'axios';
 
@@ -18,93 +18,123 @@ const AdminCreatorPerformance = () => {
   };
 
   // Helper function to get the start of the current week (Monday)
-  const getStartOfWeek = (date) => {
+  const getStartOfWeek = useCallback((date) => {
     const startOfWeek = new Date(date);
     const day = startOfWeek.getDay();
     const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Adjust if it's Sunday
     startOfWeek.setDate(diff);
     return formatDate(startOfWeek);
-  };
-
-  // Helper function to get the start of the current month
-  const getStartOfMonth = (date) => {
+  }, []);
+  
+  const getStartOfMonth = useCallback((date) => {
     const startOfMonth = new Date(date);
     startOfMonth.setDate(1); // Set the date to the 1st of the month
     return formatDate(startOfMonth);
-  };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const currentDate = new Date();
-  
+    
         // Get yesterday's date
         const yesterday = new Date(currentDate);
         yesterday.setDate(currentDate.getDate() - 1);
         const formattedYesterday = formatDate(yesterday);
-  
+    
         // Get start and end of current week
         const startOfWeek = getStartOfWeek(currentDate);
         const formattedEndOfWeek = formatDate(new Date(currentDate)); // current day is the end of the week
-  
+    
         // Get start of the current month
         const startOfMonth = getStartOfMonth(currentDate);
         const formattedEndOfMonth = formatDate(currentDate);
-  
-        // Fetch creator performance data for yesterday
-        const yesterdayPerformanceResponse = await axios.get('/api/top_performing_creators', {
+    
+        // Fetch performance data for the specified periods
+        const yesterdayPerformanceResponse = await axios.get('/api/shop/performance', {
           params: {
             start_time: formattedYesterday,
             end_time: formattedYesterday,
-            brand_id: brandId,  // Use brandId for filtering
+            brand_id: brandId,
+            page_size: 10,
+            page_no: 1
+          }
+        });
+    
+        // Fetch flash sales performance data for the periods
+        const yesterdayflashsales = await axios.get('/api/flash_sales_performance', {
+          params: {
+            start_time: formattedYesterday,
+            end_time: formattedYesterday,
+            brand_id: brandId, // Use brandId here too
             page_size: 10,
             page_no: 1
           }
         });
   
-        // Fetch creator performance data for the current week
-        const currentWeekPerformanceResponse = await axios.get('/api/top_performing_creators', {
+        const currentWeekPerformanceResponse = await axios.get('/api/shop/performance', {
           params: {
             start_time: startOfWeek,
             end_time: formattedEndOfWeek,
-            brand_id: brandId,  // Use brandId for filtering
+            brand_id: brandId, // Use the brandId for filtering
             page_size: 10,
             page_no: 1
           }
         });
   
-        // Fetch creator performance data for the current month
-        const monthToDatePerformanceResponse = await axios.get('/api/top_performing_creators', {
+        const currentWeekflashsales = await axios.get('/api/flash_sales_performance', {
+          params: {
+            start_time: startOfWeek,
+            end_time: formattedEndOfWeek,
+            brand_id: brandId, // Use brandId here too
+            page_size: 10,
+            page_no: 1
+          }
+        });
+  
+        const monthToDatePerformanceResponse = await axios.get('/api/shop/performance', {
           params: {
             start_time: startOfMonth,
             end_time: formattedEndOfMonth,
-            brand_id: brandId,  // Use brandId for filtering
+            brand_id: brandId,  // Use the brandId for filtering
             page_size: 10,
             page_no: 1
           }
         });
   
-        // Update the performance state with the fetched data
+        const monthToDateflashsales = await axios.get('/api/flash_sales_performance', {
+          params: {
+            start_time: startOfMonth,
+            end_time: formattedEndOfMonth,
+            brand_id: brandId, // Use brandId here too
+            page_size: 10,
+            page_no: 1
+          }
+        });
+  
+        // Update state with fetched data
         setYesterdayData({
-          topPerformingCreators: yesterdayPerformanceResponse.data.top_creators.length,
+          totalGmv: yesterdayPerformanceResponse.data.gmv,
+          flashSalesPerformance: yesterdayflashsales.data.total_sales,
         });
   
         setCurrentWeekData({
-          topPerformingCreators: currentWeekPerformanceResponse.data.top_creators.length,
+          totalGmv: currentWeekPerformanceResponse.data.gmv,
+          flashSalesPerformance: currentWeekflashsales.data.total_sales,
         });
   
         setMonthToDateData({
-          topPerformingCreators: monthToDatePerformanceResponse.data.top_creators.length,
+          totalGmv: monthToDatePerformanceResponse.data.gmv,
+          flashSalesPerformance: monthToDateflashsales.data.total_sales,
         });
   
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching performance data:", error);
       }
     };
   
     fetchData();
-  }, [brandId]); 
-  
+  }, [brandId, getStartOfMonth, getStartOfWeek]);  // Dependency on `brandId` only
   // Only re-run effect when brandId changes
   // Helper function to format currency
   // const formatCurrency = (amount) => {

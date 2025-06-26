@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 // import { ShoppingCart, TrendingUp, Package, AlertCircle, Calendar, DollarSign } from 'lucide-react';
@@ -20,20 +20,19 @@ const AdminShopPerformance = () => {
   };
 
   // Helper function to get the start of the current week (Monday)
-  const getStartOfWeek = (date) => {
+  const getStartOfWeek = useCallback((date) => {
     const startOfWeek = new Date(date);
     const day = startOfWeek.getDay();
     const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Adjust if it's Sunday
     startOfWeek.setDate(diff);
     return formatDate(startOfWeek);
-  };
-
-  // Helper function to get the start of the current month
-  const getStartOfMonth = (date) => {
+  }, []);
+  
+  const getStartOfMonth = useCallback((date) => {
     const startOfMonth = new Date(date);
     startOfMonth.setDate(1); // Set the date to the 1st of the month
     return formatDate(startOfMonth);
-  };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -139,7 +138,7 @@ const AdminShopPerformance = () => {
     };
 
     fetchData();
-  }, [brandId]);
+  }, [brandId, getStartOfMonth, getStartOfWeek]);
 
   // Helper function to format currency
   const formatCurrency = (amount) => {

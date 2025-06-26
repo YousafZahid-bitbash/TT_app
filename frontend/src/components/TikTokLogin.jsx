@@ -1,32 +1,3 @@
-// import React from 'react';
-// import axios from 'axios';
-
-// const TikTokLogin = () => {
-
-
-
-
-  
-//   const handleLoginClick = async () => {
-//     try {
-//       // Redirect to the backend to start TikTok OAuth process
-//       const response = await axios.get('/api/tiktok/login');
-//       // This will redirect the user to TikTok's OAuth page
-//       window.location.href = response.data.redirect_url; // Get the URL to redirect to TikTok OAuth page
-//     } catch (error) {
-//       console.error("Error redirecting to TikTok OAuth:", error);
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <button onClick={handleLoginClick}>Login with TikTok</button>
-//     </div>
-//   );
-// };
-
-// export default TikTokLogin;
-
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
