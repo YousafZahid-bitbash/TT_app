@@ -81,7 +81,11 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Allow the React app's origin
+    allow_origins=[
+        "http://localhost:3000",  # Local development (React app on localhost)
+        "https://tt-app-frontend.vercel.app",  # Your deployed frontend URL on Vercel (replace this with your actual Vercel URL)
+        "https://*.vercel.app",  # Allow all Vercel subdomains (useful if you have multiple environments)
+    ],
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods
     allow_headers=["*"],  # Allow all headers
