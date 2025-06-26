@@ -7,7 +7,7 @@ const AdminCreatorPerformance = () => {
   const [yesterdayData, setYesterdayData] = useState({});
   const [currentWeekData, setCurrentWeekData] = useState({});
   const [monthToDateData, setMonthToDateData] = useState({});
-  const [dates, setDates] = useState({ startDate: '', endDate: '' });
+  // const [dates, setDates] = useState({ startDate: '', endDate: '' });
 
   // Helper function to format dates as 'YYYY-MM-DD'
   const formatDate = (date) => {
@@ -37,20 +37,20 @@ const AdminCreatorPerformance = () => {
     const fetchData = async () => {
       try {
         const currentDate = new Date();
-
+  
         // Get yesterday's date
         const yesterday = new Date(currentDate);
         yesterday.setDate(currentDate.getDate() - 1);
         const formattedYesterday = formatDate(yesterday);
-
+  
         // Get start and end of current week
         const startOfWeek = getStartOfWeek(currentDate);
         const formattedEndOfWeek = formatDate(new Date(currentDate)); // current day is the end of the week
-
+  
         // Get start of the current month
         const startOfMonth = getStartOfMonth(currentDate);
         const formattedEndOfMonth = formatDate(currentDate);
-
+  
         // Fetch creator performance data for yesterday
         const yesterdayPerformanceResponse = await axios.get('/api/top_performing_creators', {
           params: {
@@ -61,7 +61,7 @@ const AdminCreatorPerformance = () => {
             page_no: 1
           }
         });
-
+  
         // Fetch creator performance data for the current week
         const currentWeekPerformanceResponse = await axios.get('/api/top_performing_creators', {
           params: {
@@ -72,7 +72,7 @@ const AdminCreatorPerformance = () => {
             page_no: 1
           }
         });
-
+  
         // Fetch creator performance data for the current month
         const monthToDatePerformanceResponse = await axios.get('/api/top_performing_creators', {
           params: {
@@ -83,38 +83,37 @@ const AdminCreatorPerformance = () => {
             page_no: 1
           }
         });
-
-        
-
+  
         // Update the performance state with the fetched data
         setYesterdayData({
           topPerformingCreators: yesterdayPerformanceResponse.data.top_creators.length,
         });
-
+  
         setCurrentWeekData({
           topPerformingCreators: currentWeekPerformanceResponse.data.top_creators.length,
         });
-
+  
         setMonthToDateData({
           topPerformingCreators: monthToDatePerformanceResponse.data.top_creators.length,
         });
-
+  
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
+  
     fetchData();
-  }, [brandId, dates]);
-
+  }, [brandId]); 
+  
+  // Only re-run effect when brandId changes
   // Helper function to format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2
-    }).format(amount);
-  };
+  // const formatCurrency = (amount) => {
+  //   return new Intl.NumberFormat('en-US', {
+  //     style: 'currency',
+  //     currency: 'USD',
+  //     minimumFractionDigits: 2
+  //   }).format(amount);
+  // };
 
   const renderTable = (data, title, period, bgColor) => (
     <div className="analytics-table">

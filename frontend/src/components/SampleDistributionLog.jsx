@@ -10,7 +10,7 @@ const SampleDistributionLog = () => {
   const [endDate, setEndDate] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [pageSize, setPageSize] = useState(20);
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
   const [updatingStatus, setUpdatingStatus] = useState({});
 
   // Set default dates (last 30 days)
@@ -41,7 +41,7 @@ const SampleDistributionLog = () => {
         page_no: currentPage.toString()
       });
 
-      const response = await fetch(`http://localhost:8000/sample_applications?${params}`);
+      const response = await fetch(`api/sample_applications?${params}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -66,7 +66,7 @@ const SampleDistributionLog = () => {
         end_date: endDate
       });
 
-      const response = await fetch(`http://localhost:8000/sample_applications/statistics?${params}`);
+      const response = await fetch(`api/sample_applications/statistics?${params}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -89,7 +89,7 @@ const SampleDistributionLog = () => {
       });
 
       const response = await fetch(
-        `http://localhost:8000/sample_applications/${applicationId}/update_status?${params}`,
+        `api/sample_applications/${applicationId}/update_status?${params}`,
         { method: 'POST' }
       );
       

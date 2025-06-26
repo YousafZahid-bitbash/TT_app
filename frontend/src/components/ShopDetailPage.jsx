@@ -10,32 +10,32 @@ const ShopDetailPage = () => {
     currentWeekData: {},
     monthToDateData: {}
   });
-  const [performanceData, setPerformanceData] = useState({
-    yesterdayData: {},
-    currentWeekData: {},
-    monthToDateData: {}
-  });
-  const [dates, setDates] = useState({ startDate: '', endDate: '' });
+  // const [performanceData, setPerformanceData] = useState({
+  //   yesterdayData: {},
+  //   currentWeekData: {},
+  //   monthToDateData: {}
+  // });
+  // const [dates, setDates] = useState({ startDate: '', endDate: '' });
 
-  const fetchShopPerformance = async () => {
-    try {
-      const response = await axios.get('/api/shop/performance', {
-        params: {
-          start_time: dates.startDate,
-          end_time: dates.endDate,
-          brand_id: brandId, // Pass the brandId for filtering shop performance
-          page_size: 10,
-          page_no: 1,
-        },
-      });
-      setShopData((prevData) => ({
-        ...prevData,
-        shopPerformance: response.data,
-      }));
-    } catch (error) {
-      console.error('Error fetching shop performance:', error);
-    }
-  };
+  // const fetchShopPerformance = async () => {
+  //   try {
+  //     const response = await axios.get('/api/shop/performance', {
+  //       params: {
+  //         start_time: dates.startDate,
+  //         end_time: dates.endDate,
+  //         brand_id: brandId, // Pass the brandId for filtering shop performance
+  //         page_size: 10,
+  //         page_no: 1,
+  //       },
+  //     });
+  //     setShopData((prevData) => ({
+  //       ...prevData,
+  //       shopPerformance: response.data,
+  //     }));
+  //   } catch (error) {
+  //     console.error('Error fetching shop performance:', error);
+  //   }
+  // };
 
 
   // Helper functions to format dates

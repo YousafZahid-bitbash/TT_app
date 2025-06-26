@@ -1,52 +1,12 @@
-// // src/components/Sidebar.jsx
-// import React from 'react';
-// import { Link } from 'react-router-dom'; // For navigation
-
-// const Sidebar = () => {
-//   return (
-//     <div className="sidebar">
-//       <h2 className="sidebar-title">Dashboard</h2>
-//       <ul className="sidebar-links">
-//         <li>
-//           <Link to="/" className="sidebar-link">
-//             Dashboard Overview
-//           </Link>
-//         </li>
-//         <li>
-//           <Link to="/shop-performance" className="sidebar-link">
-//             Shop Performance
-//           </Link>
-//         </li>
-//         <li>
-//           <Link to="/creator-performance" className="sidebar-link">
-//             Creator Performance
-//           </Link>
-//         </li>
-//         {/* Add more links as needed */}
-//       </ul>
-//     </div>
-//   );
-// };
-
-// export default Sidebar;
-
 import React, { useState } from 'react';
 import { 
   BarChart3, 
-  Package, 
-  PieChart, 
   Users, 
-  TrendingUp, 
   Settings, 
   Zap,
   FolderOpen,
   LogOut,
   Package2,
-  ShoppingCart,
-  Video,
-  Database,
-  AlertTriangle,
-  TrendingDown
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -245,63 +205,7 @@ const AdminSidebar = () => {
       module: 'Dashboard Overview',
       description: 'View metrics by brand or global'
     },
-    // {
-    //   id: 'shop-performance',
-    //   name: 'Shop Performance',
-    //   href: '/shop-performance',
-    //   icon: ShoppingCart,
-    //   module: 'Shop Performance Module',
-    //   description: 'GMV, TikTok campaigns, refund rates'
-    // },
-    // {
-    //   id: 'creator-performance',
-    //   name: 'Creator Performance',
-    //   href: '/creator-performance',
-    //   icon: Video,
-    //   module: 'Creator Performance Module',
-    //   description: 'Creator metrics and content performance'
-    // },
-    // {
-    //   id: 'products',
-    //   name: 'Products',
-    //   href: '/products',
-    //   icon: Package,
-    //   module: 'Backend Metrics Module',
-    //   description: 'Inventory and top SKUs'
-    // },
-    // {
-    //   id: 'ceo-dashboard',
-    //   name: 'CEO Dashboard',
-    //   href: '/ceo-dashboard',
-    //   icon: PieChart,
-    //   module: 'Dashboard Overview',
-    //   description: 'Executive level metrics',
-    //   superAdminOnly: true
-    // },
-    // {
-    //   id: 'customer-insight',
-    //   name: 'Customer Insight',
-    //   href: '/customer-insight',
-    //   icon: Users,
-    //   module: 'Creator Performance Module',
-    //   description: 'Customer and affiliate insights'
-    // },
-    // {
-    //   id: 'backend-metrics',
-    //   name: 'Backend Metrics',
-    //   href: '/backend-metrics',
-    //   icon: Database,
-    //   module: 'Backend Metrics Module',
-    //   description: 'Inventory alerts and sample distribution'
-    // },
-    // {
-    //   id: 'cogs-fbs-values',
-    //   name: 'COGS and FBS Values',
-    //   href: '/cogs-fbs-values',
-    //   icon: TrendingUp,
-    //   module: 'Shop Performance Module',
-    //   description: 'Cost analysis and FBS tracking'
-    // }
+    
   ];
 
   const settingsItems = [
@@ -447,32 +351,6 @@ const AdminSidebar = () => {
             })}
           </ul>
         </div>
-
-        {/* Shop Data Sync Progress */}
-        {/* <div style={styles.progressSection}>
-          <div style={styles.progressTitle}>
-            <Database style={{ width: '12px', height: '12px' }} />
-            Shop Data Sync
-          </div>
-          <div style={styles.progressBar}>
-            <div style={styles.progressFill}></div>
-          </div>
-          <div style={styles.progressText}>65% Complete</div>
-        </div> */}
-
-        {/* System Alerts */}
-        {/* <div style={styles.alertSection}>
-          <div style={styles.alertBox}>
-            <div style={styles.alertTitle}>
-              <AlertTriangle style={{ width: '12px', height: '12px' }} />
-              System Alerts
-            </div>
-            <div style={styles.alertContent}>
-              • 5 low stock items<br />
-              • 2 pending samples
-            </div>
-          </div>
-        </div> */}
       </nav>
 
       {/* Bottom Section */}

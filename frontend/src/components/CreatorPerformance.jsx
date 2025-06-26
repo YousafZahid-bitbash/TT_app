@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Users, TrendingUp, Video, UserPlus, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 
 const CreatorPerformance = () => {
   const [yesterdayData, setYesterdayData] = useState({});
   const [currentWeekData, setCurrentWeekData] = useState({});
   const [monthToDateData, setMonthToDateData] = useState({});
-  const [dates, setDates] = useState({ startDate: '', endDate: '' });
-  const [data, setData] = useState(null);
+  // const [dates, setDates] = useState({ startDate: '', endDate: '' });
+  // const [data, setData] = useState(null);
 
  
   // Helper function to format dates as 'YYYY-MM-DD'
@@ -201,16 +200,19 @@ const CreatorPerformance = () => {
         setYesterdayData({
           topPerformingCreators: dailycreatorsResponse.data.top_creators.length,
           gmvpervideo: dailygmvPervideo.data.gmv,
+          refundrate: dailyRefundrate.data.refundrate,
         });
 
         setCurrentWeekData({
           topPerformingCreators: weaklycreatorsResponse.data.top_creators.length,
           gmvpervideo: weeklygmvPervideo.data.gmv,
+          refundrate: weeklyRefundrate.data.refundrate,
         });
 
         setMonthToDateData({
           topPerformingCreators: monthlycreatorsResponse.data.top_creators.length,
           gmvpervideo: monthlygmvPervideo.data.gmv,
+          refundrate: monthlyRefundrate.data.refundrate, 
         });
 
       } catch (error) {
@@ -221,18 +223,18 @@ const CreatorPerformance = () => {
     fetchData();
   }, []);
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2
-    }).format(amount);
-  };
+  // const formatCurrency = (amount) => {
+  //   return new Intl.NumberFormat('en-US', {
+  //     style: 'currency',
+  //     currency: 'USD',
+  //     minimumFractionDigits: 2
+  //   }).format(amount);
+  // };
 
-  const calculatePercentage = (value, total) => {
-    if (total === 0) return '0.0%';
-    return ((value / total) * 100).toFixed(1) + '%';
-  };
+  // const calculatePercentage = (value, total) => {
+  //   if (total === 0) return '0.0%';
+  //   return ((value / total) * 100).toFixed(1) + '%';
+  // };
 
   const renderTable = (data, title, period, bgColor) => (
     <div className="analytics-table">
@@ -248,6 +250,10 @@ const CreatorPerformance = () => {
         <div className="metric-row">
           <span className="metric-label">GMV PER VIDEO</span>
           <span className="metric-value">{data.gmvpervideo}</span>
+        </div>
+        <div className="metric-row">
+          <span className="metric-label">Refund Rate</span>
+          <span className="metric-value">{data.refundrate}</span>
         </div>
       </div>
     </div>

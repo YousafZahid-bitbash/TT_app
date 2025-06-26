@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { ShoppingCart, TrendingUp, Package, AlertCircle, Calendar, DollarSign } from 'lucide-react';
+// import { ShoppingCart, TrendingUp, Package, AlertCircle, Calendar, DollarSign } from 'lucide-react';
 import axios from 'axios';
 const ShopPerformance = () => {
   const [yesterdayData, setYesterdayData] = useState({});
    const [currentWeekData, setCurrentWeekData] = useState({});
    const [monthToDateData, setMonthToDateData] = useState({});
-   const [dates, setDates] = useState({ startDate: '', endDate: '' });
-   const [data, setData] = useState(null);
+    const [dates, setDate] = useState({ startDate: '', endDate: '' });
+  //  const [data, setData] = useState(null);
  
-   const fetchPerformance = async () => {
-     try {
-       const response = await axios.get('/api/shop/performance', {
-         params: {
-           start_time: dates.startDate, // use selected start date
-           end_time: dates.endDate,     // use selected end date
-           page_size: 10,
-           page_no: 1,
-         },
-       });
-       setData(response.data);
-     } catch (error) {
-       console.error('API call error:', error);
-     }
-   };
+  //  const fetchPerformance = async () => {
+  //    try {
+  //      const response = await axios.get('/api/shop/performance', {
+  //        params: {
+  //          start_time: dates.startDate, // use selected start date
+  //          end_time: dates.endDate,     // use selected end date
+  //          page_size: 10,
+  //          page_no: 1,
+  //        },
+  //      });
+  //      setData(response.data);
+  //    } catch (error) {
+  //      console.error('API call error:', error);
+  //    }
+  //  };
  
    // Helper function to format dates as 'YYYY-MM-DD'
    const formatDate = (date) => {
@@ -38,16 +38,36 @@ const ShopPerformance = () => {
      const day = startOfWeek.getDay();
      const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Adjust if it's Sunday
      startOfWeek.setDate(diff);
-     return formatDate(startOfWeek);
+  
+     // Set the start of the week in the dates state
+     const formattedStartOfWeek = formatDate(startOfWeek);
+     setDate((prevState) => ({
+       ...prevState,
+       startDate: formattedStartOfWeek,
+       endDate: formatDate(new Date())  // Set the end date as today (current day)
+     }));
+  
+     return formattedStartOfWeek;
    };
- 
+  
    // Helper function to get the start of the current month
    const getStartOfMonth = (date) => {
      const startOfMonth = new Date(date);
      startOfMonth.setDate(1); // Set the date to the 1st of the month
-     return formatDate(startOfMonth);
-   };
- 
+  
+     // Set the start of the month in the dates state
+     const formattedStartOfMonth = formatDate(startOfMonth);
+     setDate((prevState) => ({
+       ...prevState,
+       startDate: formattedStartOfMonth,
+       endDate: formatDate(new Date())  // Set the end date as today (current day)
+     }));
+   
+       return formattedStartOfMonth;
+     };
+   
+
+   
    useEffect(() => {
      const fetchData = async () => {
        try {
