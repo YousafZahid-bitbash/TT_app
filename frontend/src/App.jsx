@@ -1,12 +1,6 @@
 // src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
-// import Sidebar from './components/Sidebar'; // Sidebar component
-// import Dashboard from './components/Dashboard'; // Dashboard component
-// import ShopPerformance from './pages/ShopPerformance'; // ShopPerformance component (mock for now)
-// import CreatorPerformance from './components/CreatorPerformance'; // CreatorPerformance component (mock for now)
-
 import DashboardPage from './pages/DashboardPage'; // Dashboard component
 import ShopPerformancePage from './pages/ShopPerfomancePage'; // ShopPerformance component (mock for now)
 import CreatorPerformancePage from './pages/CreatorPerfomancePage'; // CreatorPerformance component (mock for now)
@@ -18,6 +12,8 @@ import BackendMetrices from './pages/BackendMetrices'; // Your existing BackendM
 import InventoryTrackerPage from './pages/InventoryTrackerPage';
 import TopSellingSkuPage from './pages/TopSellingSkuPage';
 import SampleDistributionLogPage from './pages/SampleDistributionLogPage';
+import AlertsPage from './pages/AlertsPage'; // Import AlertsPage
+
 const App = () => {
   return (
     <Router>
@@ -27,9 +23,9 @@ const App = () => {
           <Route path="/Dashboard" element={<DashboardPage />} />
           <Route path="/shop-performance" element={<ShopPerformancePage />} />
           <Route path="/creator-performance" element={<CreatorPerformancePage />} />
+          <Route path="/alerts" element={<AlertsPage />} /> {/* Add route for Alerts page */}
           <Route path="/admin" element={<Admin />} /> {/*Admin Page */}
           <Route path="/admin/shop/:brandId" element={<AdminShopDetailPage />} />
-
           <Route path="/backend-metrics" element={<BackendMetrices />} />
           <Route path="/backend-metrics/inventory" element={<InventoryTrackerPage />} />
           <Route path="/backend-metrics/top-skus" element={<TopSellingSkuPage />} />

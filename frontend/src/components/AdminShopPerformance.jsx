@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-// import { ShoppingCart, TrendingUp, Package, AlertCircle, Calendar, DollarSign } from 'lucide-react';
 import "./AdminShopPerformance.css";  // Assuming custom styles for the Admin Shop Performance
 
 const AdminShopPerformance = () => {
@@ -9,7 +8,6 @@ const AdminShopPerformance = () => {
   const [yesterdayData, setYesterdayData] = useState({});
   const [currentWeekData, setCurrentWeekData] = useState({});
   const [monthToDateData, setMonthToDateData] = useState({});
-  // const [dates, setDates] = useState({ startDate: '', endDate: '' });
 
   // Helper function to format dates as 'YYYY-MM-DD'
   const formatDate = (date) => {

@@ -1,6 +1,5 @@
-
-
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   BarChart3, 
   ShoppingCart, 
@@ -26,6 +25,7 @@ import {
 const Sidebar = () => {
   const [userRole, setUserRole] = useState('Brand Admin');
   const [expandedMenus, setExpandedMenus] = useState({});
+  const location = useLocation();
 
   const toggleMenu = (menuId) => {
     setExpandedMenus(prev => ({
@@ -286,7 +286,6 @@ const Sidebar = () => {
       name: 'Dashboard',
       href: '/dashboard',
       icon: BarChart3,
-      active: true,
       description: 'KPIs: GMV, Refund %, Top SKUs, Top Creators, Campaign ROI'
     },
     {
@@ -455,11 +454,11 @@ const Sidebar = () => {
                       <button
                         style={{
                           ...styles.navItemWithDropdown,
-                          ...(item.active ? styles.navItemActive : styles.navItemInactive)
+                          ...(location.pathname.startsWith(item.href) ? styles.navItemActive : styles.navItemInactive)
                         }}
                         onClick={() => toggleMenu(item.id)}
                         title={item.description}
-                        data-active={item.active}
+                        data-active={location.pathname.startsWith(item.href)}
                         onMouseEnter={handleNavItemHover}
                         onMouseLeave={handleNavItemLeave}
                       >
@@ -478,37 +477,40 @@ const Sidebar = () => {
                           {item.dropdownItems.map((dropdownItem) => {
                             const DropdownIcon = dropdownItem.icon;
                             return (
-                              <a
+                              <Link
                                 key={dropdownItem.id}
-                                href={dropdownItem.href}
-                                style={styles.dropdownItem}
+                                to={dropdownItem.href}
+                                style={{
+                                  ...styles.dropdownItem,
+                                  ...(location.pathname === dropdownItem.href ? styles.dropdownItemHover : {})
+                                }}
                                 title={dropdownItem.description}
                                 onMouseEnter={handleDropdownItemHover}
                                 onMouseLeave={handleDropdownItemLeave}
                               >
                                 <DropdownIcon style={styles.dropdownIcon} />
                                 {dropdownItem.name}
-                              </a>
+                              </Link>
                             );
                           })}
                         </div>
                       )}
                     </>
                   ) : (
-                    <a 
-                      href={item.href}
+                    <Link 
+                      to={item.href}
                       style={{
                         ...styles.navItem,
-                        ...(item.active ? styles.navItemActive : styles.navItemInactive)
+                        ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive)
                       }}
                       title={item.description}
-                      data-active={item.active}
+                      data-active={location.pathname === item.href}
                       onMouseEnter={handleNavItemHover}
                       onMouseLeave={handleNavItemLeave}
                     >
                       <Icon style={styles.navIcon} />
                       {item.name}
-                    </a>
+                    </Link>
                   )}
                 </li>
               );
@@ -524,9 +526,12 @@ const Sidebar = () => {
               const Icon = item.icon;
               return (
                 <li key={item.id}>
-                  <a 
-                    href={item.href}
-                    style={{...styles.navItem, ...styles.navItemInactive}}
+                  <Link 
+                    to={item.href}
+                    style={{
+                      ...styles.navItem,
+                      ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive)
+                    }}
                     title={item.description}
                     onMouseEnter={handleNavItemHover}
                     onMouseLeave={handleNavItemLeave}
@@ -536,7 +541,7 @@ const Sidebar = () => {
                     {item.superAdminOnly && (
                       <span style={styles.badge}>Admin</span>
                     )}
-                  </a>
+                  </Link>
                 </li>
               );
             })}
@@ -566,15 +571,18 @@ const Sidebar = () => {
             const Icon = item.icon;
             return (
               <li key={item.id}>
-                <a 
-                  href={item.href}
-                  style={{...styles.navItem, ...styles.navItemInactive}}
+                <Link 
+                  to={item.href}
+                  style={{
+                    ...styles.navItem,
+                    ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive)
+                  }}
                   onMouseEnter={handleNavItemHover}
                   onMouseLeave={handleNavItemLeave}
                 >
                   <Icon style={styles.navIcon} />
                   {item.name}
-                </a>
+                </Link>
               </li>
             );
           })}

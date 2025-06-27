@@ -9,11 +9,9 @@ const Dashboard = () => {
   const [currentWeekData, setCurrentWeekData] = useState({});
   const [monthToDateData, setMonthToDateData] = useState({});
   const [dates, setDates] = useState({ startDate: '', endDate: '' });
-  // const [data, setData] = useState(null);
   const [customRangeData, setCustomRangeData] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const [selectedPeriods, setSelectedPeriods] = useState([]);
-
+  
   // Function to generate month periods between start and end date
   const generateMonthPeriods = (startDate, endDate) => {
     const periods = [];
@@ -145,22 +143,6 @@ const Dashboard = () => {
     }
   };
 
-  // const fetchPerformance = async () => {
-  //   try {
-  //     const response = await axios.get('/api/shop/performance', {
-  //       params: {
-  //         start_time: dates.startDate,
-  //         end_time: dates.endDate,
-  //         page_size: 10,
-  //         page_no: 1,
-  //       },
-  //     });
-  //     setData(response.data);
-  //   } catch (error) {
-  //     console.error('API call error:', error);
-  //   }
-  // };
-
   // Helper function to format dates as 'YYYY-MM-DD'
   const formatDate = (date) => {
     const year = date.getFullYear();
@@ -183,16 +165,6 @@ const Dashboard = () => {
     startOfMonth.setDate(1);
     return formatDate(startOfMonth);
   }, []);
-
-  // Calculate percentage change
-  // const calculatePercentageChange = (current, previous) => {
-  //   if (previous === 0) {
-  //     return current > 0 ? '+100.0%' : '0.0%';
-  //   }
-  //   const change = ((current - previous) / previous) * 100;
-  //   const sign = change >= 0 ? '+' : '';
-  //   return `${sign}${change.toFixed(1)}%`;
-  // };
 
   // Calculate totals for the custom range table
   const calculateTotals = () => {

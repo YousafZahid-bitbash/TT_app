@@ -19,13 +19,13 @@ const AdminDashboard = () => {
   }, []);
 
   // Filtering function to search by username or brand_name
-  const filteredUsers = users.filter((user) => {
+  const filteredUsers = Array.isArray(users) ? users.filter((user) => {
     const searchLower = search.toLowerCase();
     return (
       user.username.toLowerCase().includes(searchLower) || 
       user.brand_name.toLowerCase().includes(searchLower)
     );
-  });
+  }) : [];
 
   return (
     <div className="admin-dashboard">
@@ -66,3 +66,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+

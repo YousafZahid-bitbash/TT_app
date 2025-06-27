@@ -199,7 +199,7 @@ const AdminSidebar = () => {
     {
       id: 'dashboard',
       name: 'Dashboard',
-      href: '/admin-dashboard',
+      href: '/admin',
       icon: BarChart3,
       active: true,
       module: 'Dashboard Overview',
