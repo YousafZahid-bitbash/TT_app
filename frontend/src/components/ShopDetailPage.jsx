@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { apiClient } from '../api/api';
 import "./ShopDetailPage.css";
 
 const ShopDetailPage = () => {
@@ -61,7 +61,7 @@ const ShopDetailPage = () => {
         const formattedEndOfMonth = formatDate(currentDate); // current day is the end of the month
 
         // Fetch performance data (GMV, flash sales, etc.) for yesterday
-        const yesterdayPerformanceResponse = await axios.get('/api/shop/performance', {
+        const yesterdayPerformanceResponse = await apiClient.get('/shop/performance', {
           params: {
             start_time: formattedYesterday,
             end_time: formattedYesterday,
@@ -72,7 +72,7 @@ const ShopDetailPage = () => {
         });
 
         // Fetch performance data for the current week
-        const currentWeekPerformanceResponse = await axios.get('/api/shop/performance', {
+        const currentWeekPerformanceResponse = await apiClient.get('/shop/performance', {
           params: {
             start_time: startOfWeek,
             end_time: formattedEndOfWeek,
@@ -83,7 +83,7 @@ const ShopDetailPage = () => {
         });
 
         // Fetch performance data for the current month
-        const monthToDatePerformanceResponse = await axios.get('/api/shop/performance', {
+        const monthToDatePerformanceResponse = await apiClient.get('/shop/performance', {
           params: {
             start_time: startOfMonth,
             end_time: formattedEndOfMonth,

@@ -1,6 +1,7 @@
 //TopSellingSku.jsx
 import React, { useState, useEffect } from 'react';
 import './TopSellingSku.css';
+import { API_URL as API_BASE } from '../api/api';
 
 const TopSellingSku = () => {
   const [skuData, setSkuData] = useState([]);
@@ -38,7 +39,7 @@ const TopSellingSku = () => {
         page_no: '1'
       });
 
-      const response = await fetch(`http://localhost:8000/top_selling_skus?${params}`);
+      const response = await fetch(`${API_BASE}/top_selling_skus?${params}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

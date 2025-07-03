@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { 
   BarChart3, 
   ShoppingCart, 
@@ -26,6 +27,7 @@ const Sidebar = () => {
   const [userRole, setUserRole] = useState('Brand Admin');
   const [expandedMenus, setExpandedMenus] = useState({});
   const location = useLocation();
+  const { logout, user } = useAuth();
 
   const toggleMenu = (menuId) => {
     setExpandedMenus(prev => ({
@@ -359,7 +361,11 @@ const Sidebar = () => {
       id: 'logout',
       name: 'Logout',
       href: '/logout',
-      icon: LogOut
+      icon: LogOut,
+      onClick: () => {
+        logout();
+        window.location.href = '/';
+      }
     },
     {
       id: 'affiliate-program',
@@ -566,23 +572,53 @@ const Sidebar = () => {
 
       {/* Bottom Section */}
       <div style={styles.bottomSection}>
+        {user && (
+          <div style={{ padding: '12px', marginBottom: '16px', borderBottom: '1px solid #e5e7eb' }}>
+            <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '4px' }}>
+              Logged in as:
+            </div>
+            <div style={{ fontSize: '14px', fontWeight: '600', color: '#1f2937' }}>
+              {user.seller_name || user.shop_name || 'TikTok Shop User'}
+            </div>
+          </div>
+        )}
         <ul style={styles.navList}>
           {bottomItems.map((item) => {
             const Icon = item.icon;
             return (
               <li key={item.id}>
-                <Link 
-                  to={item.href}
-                  style={{
-                    ...styles.navItem,
-                    ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive)
-                  }}
-                  onMouseEnter={handleNavItemHover}
-                  onMouseLeave={handleNavItemLeave}
-                >
-                  <Icon style={styles.navIcon} />
-                  {item.name}
-                </Link>
+                {item.onClick ? (
+                  <button
+                    onClick={item.onClick}
+                    style={{
+                      ...styles.navItem,
+                      ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive),
+                      background: 'none',
+                      border: 'none',
+                      width: '100%',
+                      textAlign: 'left',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={handleNavItemHover}
+                    onMouseLeave={handleNavItemLeave}
+                  >
+                    <Icon style={styles.navIcon} />
+                    {item.name}
+                  </button>
+                ) : (
+                  <Link 
+                    to={item.href}
+                    style={{
+                      ...styles.navItem,
+                      ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive)
+                    }}
+                    onMouseEnter={handleNavItemHover}
+                    onMouseLeave={handleNavItemLeave}
+                  >
+                    <Icon style={styles.navIcon} />
+                    {item.name}
+                  </Link>
+                )}
               </li>
             );
           })}

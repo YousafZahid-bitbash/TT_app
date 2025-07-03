@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import { apiClient } from '../api/api';
 import { 
   Bell, 
   AlertTriangle, 
@@ -29,7 +29,7 @@ const Alerts = () => {
       
       // Fetch inventory alerts
       if (filter === 'all' || filter === 'inventory') {
-        const inventoryResponse = await axios.get('/api/inventory/alerts/history', {
+        const inventoryResponse = await apiClient.get('/inventory/alerts/history', {
           params: { limit, days }
         });
         if (inventoryResponse.data.status === 'success') {
@@ -42,7 +42,7 @@ const Alerts = () => {
       
       // Fetch sample alerts
       if (filter === 'all' || filter === 'samples') {
-        const sampleResponse = await axios.get('/api/samples/alerts/history', {
+        const sampleResponse = await apiClient.get('/samples/alerts/history', {
           params: { limit, days }
         });
         if (sampleResponse.data.status === 'success') {

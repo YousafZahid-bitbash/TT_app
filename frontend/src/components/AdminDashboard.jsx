@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { apiClient } from '../api/api';
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
@@ -9,7 +9,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     // Fetch users and their brands from the API
-    axios.get('/api/admin/users')  // Adjust URL if deployed differently
+    apiClient.get('/admin/users')  // Adjust URL if deployed differently
       .then(response => {
         setUsers(response.data);  // Store the data in the state
       })

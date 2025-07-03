@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { apiClient } from '../api/api';
 import "./AdminShopPerformance.css";  // Assuming custom styles for the Admin Shop Performance
 
 const AdminShopPerformance = () => {
@@ -51,7 +51,7 @@ const AdminShopPerformance = () => {
         const formattedEndOfMonth = formatDate(currentDate);
 
         // Fetch performance data (GMV, flash sales, etc.) for yesterday
-        const yesterdayPerformanceResponse = await axios.get('/api/shop/performance', {
+        const yesterdayPerformanceResponse = await apiClient.get('/shop/performance', {
           params: {
             start_time: formattedYesterday,
             end_time: formattedYesterday,
@@ -62,7 +62,7 @@ const AdminShopPerformance = () => {
         });
 
         // Fetch performance data (GMV, flash sales, etc.) for the current week
-        const currentWeekPerformanceResponse = await axios.get('/api/shop/performance', {
+        const currentWeekPerformanceResponse = await apiClient.get('/shop/performance', {
           params: {
             start_time: startOfWeek,
             end_time: formattedEndOfWeek,
@@ -73,7 +73,7 @@ const AdminShopPerformance = () => {
         });
 
         // Fetch performance data (GMV, flash sales, etc.) for the current month
-        const monthToDatePerformanceResponse = await axios.get('/api/shop/performance', {
+        const monthToDatePerformanceResponse = await apiClient.get('/shop/performance', {
           params: {
             start_time: startOfMonth,
             end_time: formattedEndOfMonth,
@@ -84,7 +84,7 @@ const AdminShopPerformance = () => {
         });
 
         // Fetch flash sales performance data for the periods
-        const yesterdayflashsales = await axios.get('/api/flash_sales_performance', {
+        const yesterdayflashsales = await apiClient.get('/flash_sales_performance', {
           params: {
             start_time: formattedYesterday,
             end_time: formattedYesterday,
@@ -94,7 +94,7 @@ const AdminShopPerformance = () => {
           }
         });
 
-        const currentWeekflashsales = await axios.get('/api/flash_sales_performance', {
+        const currentWeekflashsales = await apiClient.get('/flash_sales_performance', {
           params: {
             start_time: startOfWeek,
             end_time: formattedEndOfWeek,
@@ -104,7 +104,7 @@ const AdminShopPerformance = () => {
           }
         });
 
-        const monthToDateflashsales = await axios.get('/api/flash_sales_performance', {
+        const monthToDateflashsales = await apiClient.get('/flash_sales_performance', {
           params: {
             start_time: startOfMonth,
             end_time: formattedEndOfMonth,

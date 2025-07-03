@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 // import { ShoppingCart, TrendingUp, Package, AlertCircle, Calendar, DollarSign } from 'lucide-react';
-import axios from 'axios';
+import { apiClient } from '../api/api';
 const ShopPerformance = () => {
   const [yesterdayData, setYesterdayData] = useState({});
   const [currentWeekData, setCurrentWeekData] = useState({});
@@ -70,7 +70,7 @@ const ShopPerformance = () => {
          const formattedEndOfMonth = formatDate(currentDate); // current day is the end of the month
  
          // Fetch performance data (GMV, flash sales, etc.) for yesterday
-         const yesterdayPerformanceResponse = await axios.get('/api/shop/performance', {
+         const yesterdayPerformanceResponse = await apiClient.get('/shop/performance', {
            params: {
              start_time: formattedYesterday,
              end_time: formattedYesterday,
@@ -80,7 +80,7 @@ const ShopPerformance = () => {
          });
  
          // Fetch performance data (GMV, flash sales, etc.) for the current week
-         const currentWeekPerformanceResponse = await axios.get('/api/shop/performance', {
+         const currentWeekPerformanceResponse = await apiClient.get('/shop/performance', {
            params: {
              start_time: startOfWeek,
              end_time: formattedEndOfWeek,
@@ -90,7 +90,7 @@ const ShopPerformance = () => {
          });
  
          // Fetch performance data (GMV, flash sales, etc.) for the current month
-         const monthToDatePerformanceResponse = await axios.get('/api/shop/performance', {
+         const monthToDatePerformanceResponse = await apiClient.get('/shop/performance', {
            params: {
              start_time: startOfMonth,
              end_time: formattedEndOfMonth,
@@ -100,7 +100,7 @@ const ShopPerformance = () => {
          });
          
          //fetch flash sales performance 
-         const yesterdayflashsales = await axios.get('/api/flash_sales_performance', {
+         const yesterdayflashsales = await apiClient.get('/flash_sales_performance', {
            params: {
              start_time: formattedYesterday,
              end_time: formattedYesterday,
@@ -110,7 +110,7 @@ const ShopPerformance = () => {
          });
  
          //fetch flash sales performance 
-         const currentWeekflashsales = await axios.get('/api/flash_sales_performance', {
+         const currentWeekflashsales = await apiClient.get('/flash_sales_performance', {
            params: {
              start_time: startOfWeek,
              end_time: formattedEndOfWeek,
@@ -120,7 +120,7 @@ const ShopPerformance = () => {
          });
  
          //fetch flash sales performance 
-         const monthToDateflashsales = await axios.get('/api/flash_sales_performance', {
+         const monthToDateflashsales = await apiClient.get('/flash_sales_performance', {
            params: {
              start_time: startOfMonth,
              end_time: formattedEndOfMonth,
@@ -129,7 +129,7 @@ const ShopPerformance = () => {
            }
          });
  
-         const compain = await axios.get('/api/shop/performance', {
+         const compain = await apiClient.get('/shop/performance', {
           params: {
             start_time: getStartOfMonth(new Date()),
             end_time: formattedEndOfMonth,
@@ -137,7 +137,7 @@ const ShopPerformance = () => {
             page_no: 1
           }
          });
-         const dailyRefundrate = await axios.get('/api//calculate_refund_rate', {
+         const dailyRefundrate = await apiClient.get('/calculate_refund_rate', {
            params: {
              start_time: formattedYesterday,
              end_time: formattedYesterday,
@@ -145,7 +145,7 @@ const ShopPerformance = () => {
              page_no: 1
            }
          });
-         const weeklyRefundrate = await axios.get('/api//calculate_refund_rate', {
+         const weeklyRefundrate = await apiClient.get('/calculate_refund_rate', {
            params: {
              start_time: startOfWeek,
              end_time: formattedEndOfWeek,
@@ -153,7 +153,7 @@ const ShopPerformance = () => {
              page_no: 1
            }
          });
-         const monthlyRefundrate = await axios.get('/api//calculate_refund_rate', {
+         const monthlyRefundrate = await apiClient.get('/calculate_refund_rate', {
            params: {
              start_date: startOfMonth, // Start of current month
              end_date: formattedEndOfMonth, // End of current month (today)

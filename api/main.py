@@ -1,3 +1,5 @@
+# At the top of your main.py, replace the imports and constants:
+
 from fastapi import FastAPI, HTTPException, Query, Path, Request
 from urllib.parse import urlparse, parse_qs, urlencode
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,6 +24,10 @@ import hmac
 import hashlib
 import os
 
+# Import from your new utils file instead of defining locally
+from .tiktok_utils import generate_signature, APP_KEY, APP_SECRET, ACCESS_TOKEN, BASE_URL, SERVICE_ID
+from .tiktok_auth import router as tiktok_auth_router
+from .cookie_test import router as cookie_test_router
 # Load environment variables
 load_dotenv()
 
@@ -70,13 +76,6 @@ SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 SLACK_CHANNEL = os.getenv("SLACK_CHANNEL", "#all-tiktok")  
 
 
-APP_KEY = os.getenv("APP_KEY")
-APP_SECRET = os.getenv("APP_SECRET")
-ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
-REDIRECT_URI = os.getenv("Redirect_URI", "http://localhost:8000/tiktok/callback")
-SERVICE_ID = os.getenv("SERVICE_ID")
-
-BASE_URL = "https://partner.us.tiktokshop.com/"
 app = FastAPI()
 
 app.add_middleware(
@@ -91,26 +90,8 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-# Function to generate signature for TikTok API requests
-def generate_signature(request_method: str, url: str, headers: dict, body: Optional[str], app_secret: str) -> str:
-    parsed_url = urlparse(url)
-    path = parsed_url.path
-    query_params = parse_qs(parsed_url.query)
-    filtered_params = {k: v[0] for k, v in query_params.items() if k not in ('sign', 'access_token')}
-    sorted_keys = sorted(filtered_params.keys())
-    param_str = path
-    for key in sorted_keys:
-        param_str += key + filtered_params[key]
-    content_type = headers.get("Content-Type", "")
-    if content_type.lower() != "multipart/form-data" and body:
-        param_str += body
-    signature_base = app_secret + param_str + app_secret
-    return hmac.new(
-        app_secret.encode("utf-8"),
-        signature_base.encode("utf-8"),
-        hashlib.sha256
-    ).hexdigest()
-
+app.include_router(tiktok_auth_router)
+app.include_router(cookie_test_router)
 # Function to perform OAuth for Tiktok shop users
 
 # Function to make the actual API request
@@ -913,321 +894,6 @@ async def get_sample_application_statistics(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
     
-
-
-
-
-def generate_random_state(length=16):
-    """Generate a random state string for CSRF protection"""
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
-
-
-class TokenResponse(BaseModel):
-    access_token: str
-    access_token_expire_in: int
-    refresh_token: str
-    refresh_token_expire_in: int
-    open_id: str
-    seller_name: str
-    seller_base_region: str
-    shop_id: str
-    shop_name: str
-
-
-
-@app.get("/tiktok/login")
-async def tiktok_shop_login():
-    """
-    Initiate TikTok Shop OAuth flow by redirecting user to authorization page
-    """
-    # Generate a random state string to prevent CSRF attacks
-    state = generate_random_state()
-    
-    if not SERVICE_ID:
-        raise HTTPException(status_code=400, detail="SERVICE_ID not configured. Please check your TikTok Shop app settings.")
-    
-    # CORRECTED TikTok Shop OAuth authorization URL
-    # The correct format for Global TikTok Shop authorization
-    auth_url = f"https://open-api.tiktokglobalshop.com/authorization?service_id={SERVICE_ID}&state={state}"
-    
-    return JSONResponse(content={
-        "redirect_url": auth_url,
-        "state": state,
-        "message": "Redirect user to this URL to start TikTok Shop authorization"
-    })
-
-
-# Helper endpoint to get authorization URL without redirecting
-@app.get("/tiktok/auth_url")
-async def get_auth_url():
-    """
-    Get the TikTok Shop authorization URL without redirecting
-    """
-    if not SERVICE_ID:
-        raise HTTPException(status_code=400, detail="SERVICE_ID not configured")
-    
-    state = generate_random_state()
-    # CORRECTED authorization URL
-    auth_url = f"https://partner.us.tiktokshop.com/open/authorize?service_id={SERVICE_ID}&state={state}"
-    
-    return {
-        "authorization_url": auth_url,
-        "state": state,
-        "instructions": [
-            "1. Copy the authorization_url",
-            "2. Open it in a browser", 
-            "3. Login with your TikTok Shop seller account",
-            "4. Authorize the app",
-            "5. You'll be redirected back with an auth code",
-            "6. Use the auth code with /tiktok/exchange_code endpoint"
-        ]
-    }
-
-# Alternative method - Check your TikTok Shop Partner Center for the exact authorization URL
-@app.get("/tiktok/get_partner_auth_url")
-async def get_partner_auth_url():
-    """
-    Get authorization URL from your Partner Center app details
-    """
-    return {
-        "message": "To get the correct authorization URL:",
-        "steps": [
-            "1. Login to https://partner.tiktokglobalshop.com",
-            "2. Go to 'App & Service' section",
-            "3. Click on your app",
-            "4. Look for 'Authorization URL' in the app details",
-            "5. Copy that exact URL - it should contain your service_id",
-            "6. Use that URL format in your code"
-        ],
-        "expected_format": "https://[correct-domain]/authorize?service_id=YOUR_SERVICE_ID",
-        "note": "The exact domain may vary - use what's shown in your Partner Center"
-    }
-
-# Check if we have the right Service ID format
-@app.get("/tiktok/validate_service_id")
-async def validate_service_id():
-    """
-    Validate if SERVICE_ID is configured correctly
-    """
-    if not SERVICE_ID:
-        return {
-            "status": "error",
-            "message": "SERVICE_ID not found in environment variables",
-            "fix": "Add SERVICE_ID=your_service_id to your .env file"
-        }
-    
-    # Check if it's a valid format (usually numeric)
-    if not SERVICE_ID.isdigit():
-        return {
-            "status": "warning", 
-            "message": f"SERVICE_ID '{SERVICE_ID}' might not be in correct format",
-            "expected": "SERVICE_ID should typically be a numeric string",
-            "current": SERVICE_ID
-        }
-    
-    return {
-        "status": "ok",
-        "message": "SERVICE_ID appears to be configured correctly",
-        "service_id": SERVICE_ID,
-        "length": len(SERVICE_ID)
-    }
-
-
-# Step 2: Handle the callback from TikTok Shop
-@app.get("/tiktok/callback")
-async def tiktok_shop_callback(request: Request):
-    """
-    Handle the callback from TikTok Shop after user authorization
-    """
-    # Extract the auth_code and state from the query parameters
-    auth_code = request.query_params.get("code")  # TikTok Shop uses 'code'
-    state = request.query_params.get("state")
-    
-    # In production, validate the state parameter against stored value
-    if not state:
-        raise HTTPException(status_code=400, detail="State parameter missing")
-    
-    if not auth_code:
-        # Check for error parameters
-        error = request.query_params.get("error")
-        error_description = request.query_params.get("error_description")
-        if error:
-            raise HTTPException(status_code=400, detail=f"Authorization failed: {error} - {error_description}")
-        else:
-            raise HTTPException(status_code=400, detail="Authorization code not found in the request")
-    
-    # Exchange the authorization code for an access token
-    try:
-        token_data = await exchange_code_for_token(auth_code)
-        
-        # Store the token data in your database
-        # For demo purposes, we'll just return it
-        return {
-            "message": "Authorization successful!",
-            "token_data": token_data,
-            "note": "Store this token data securely in your database"
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to exchange code for token: {str(e)}")
-
-# Step 3: Exchange authorization code for access token
-async def exchange_code_for_token(auth_code: str) -> dict:
-    """
-    Exchange the authorization code for an access token
-    """
-    # TikTok Shop token endpoint
-    token_url = f"{BASE_URL}/api/v2/token/get"
-    
-    # Prepare the request parameters
-    timestamp = str(int(time.time()))
-    
-    params = {
-        "app_key": APP_KEY,
-        "app_secret": APP_SECRET,
-        "auth_code": auth_code,  # Note: TikTok Shop uses 'auth_code' not 'code'
-        "grant_type": "authorized_code",  # Note: TikTok Shop uses 'authorized_code'
-        "timestamp": timestamp
-    }
-    
-    # Generate signature
-    query_string = urlencode(params)
-    full_url = f"{token_url}?{query_string}"
-    headers = {"Content-Type": "application/json"}
-    
-    # Generate signature for the request
-    sign = generate_signature("POST", full_url, headers, None, APP_SECRET)
-    params["sign"] = sign
-    
-    # Make the request
-    try:
-        response = requests.post(token_url, params=params, headers=headers)
-        response_data = response.json()
-        
-        print(f"Token Response: {json.dumps(response_data, indent=2)}")  # Debug log
-        
-        if response.status_code != 200:
-            raise HTTPException(status_code=response.status_code, detail=f"HTTP Error: {response.text}")
-        
-        # Check TikTok Shop API response format
-        if response_data.get("code") != 0:
-            error_message = response_data.get("message", "Unknown error")
-            raise HTTPException(status_code=400, detail=f"TikTok Shop API error: {error_message}")
-        
-        # Extract token data from response
-        data = response_data.get("data", {})
-        if not data:
-            raise HTTPException(status_code=400, detail="No token data found in response")
-        
-        return data
-        
-    except requests.exceptions.RequestException as e:
-        raise HTTPException(status_code=500, detail=f"Request failed: {str(e)}")
-
-# Step 4: Refresh access token when it expires
-@app.post("/tiktok/refresh_token")
-async def refresh_access_token(refresh_token: str):
-    """
-    Refresh an expired access token using the refresh token
-    """
-    token_url = f"{BASE_URL}/api/v2/token/refresh"
-    timestamp = str(int(time.time()))
-    
-    params = {
-        "app_key": APP_KEY,
-        "app_secret": APP_SECRET,
-        "refresh_token": refresh_token,
-        "grant_type": "refresh_token",
-        "timestamp": timestamp
-    }
-    
-    # Generate signature
-    query_string = urlencode(params)
-    full_url = f"{token_url}?{query_string}"
-    headers = {"Content-Type": "application/json"}
-    
-    sign = generate_signature("POST", full_url, headers, None, APP_SECRET)
-    params["sign"] = sign
-    
-    try:
-        response = requests.post(token_url, params=params, headers=headers)
-        response_data = response.json()
-        
-        if response.status_code != 200:
-            raise HTTPException(status_code=response.status_code, detail=response.text)
-        
-        if response_data.get("code") != 0:
-            error_message = response_data.get("message", "Unknown error")
-            raise HTTPException(status_code=400, detail=f"TikTok Shop API error: {error_message}")
-        
-        return response_data.get("data", {})
-        
-    except requests.exceptions.RequestException as e:
-        raise HTTPException(status_code=500, detail=f"Error refreshing token: {str(e)}")
-
-# Step 5: Test the access token
-@app.get("/tiktok/test_token")
-async def test_access_token(access_token: str = Query(..., description="Access token to test")):
-    """
-    Test if an access token is valid by making a simple API call
-    """
-    # Test with a simple shop info call
-    api_path = "/api/shop/get_authorized_shop"
-    timestamp = str(int(time.time()))
-    
-    params = {
-        "app_key": APP_KEY,
-        "timestamp": timestamp,
-        "access_token": access_token,
-        "version": "202309"
-    }
-    
-    query_string = urlencode(params)
-    full_url = f"{BASE_URL}{api_path}?{query_string}"
-    headers = {"Content-Type": "application/json"}
-    
-    # Generate signature
-    sign = generate_signature("GET", full_url, headers, None, APP_SECRET)
-    params["sign"] = sign
-    
-    final_url = f"{BASE_URL}{api_path}?{urlencode(params)}"
-    
-    try:
-        response = requests.get(final_url, headers=headers)
-        response_data = response.json()
-        
-        if response.status_code == 200 and response_data.get("code") == 0:
-            return {
-                "status": "valid",
-                "message": "Access token is working correctly",
-                "shop_data": response_data.get("data", {})
-            }
-        else:
-            return {
-                "status": "invalid",
-                "message": f"Token test failed: {response_data.get('message', 'Unknown error')}",
-                "error_code": response_data.get("code")
-            }
-            
-    except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Error testing token: {str(e)}"
-        }
-
-# Manual code exchange endpoint for testing
-@app.post("/tiktok/exchange_code")
-async def manual_exchange_code(auth_code: str = Query(..., description="Authorization code from TikTok Shop")):
-    """
-    Manually exchange an authorization code for tokens (for testing)
-    """
-    try:
-        token_data = await exchange_code_for_token(auth_code)
-        return {
-            "status": "success",
-            "token_data": token_data
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 
 # Pydantic models for inventory

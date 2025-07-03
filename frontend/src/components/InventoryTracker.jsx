@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './InventoryTracker.css';
+import { API_URL as API_BASE } from '../api/api';
 
 const InventoryTracker = () => {
   const [brands, setBrands] = useState([]);
@@ -7,8 +8,6 @@ const InventoryTracker = () => {
   const [skus, setSkus] = useState([]);
   const [loading, setLoading] = useState(false);
   const [source, setSource] = useState('database');
-
-  const API_BASE = 'api';
 
   // Fetch brands on component mount
   

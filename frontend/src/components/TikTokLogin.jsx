@@ -1,6 +1,7 @@
-
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useCallback } from 'react';
+import { apiClient } from '../api/api';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const TikTokShopOAuth = () => {
   const [authUrl, setAuthUrl] = useState('');
@@ -10,15 +11,23 @@ const TikTokShopOAuth = () => {
   const [testResult, setTestResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
+  const { login, logout, isAuthenticated } = useAuth();
 
-  const API_BASE = '/api';
+  // Check if user is already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   // Get authorization URL
   const getAuthUrl = async () => {
     try {
       setLoading(true);
       setError('');
-      const response = await axios.get(`${API_BASE}/tiktok/auth_url`);
+      const response = await apiClient.get('/tiktok/auth_url');
       setAuthUrl(response.data.authorization_url);
     } catch (err) {
       setError(`Error getting auth URL: ${err.response?.data?.detail || err.message}`);
@@ -32,7 +41,7 @@ const TikTokShopOAuth = () => {
     try {
       setLoading(true);
       setError('');
-      const response = await axios.get(`${API_BASE}/tiktok/login`);
+      const response = await apiClient.get('/tiktok/login');
       // Redirect to TikTok Shop authorization page
       window.location.href = response.data.redirect_url;
     } catch (err) {
@@ -42,7 +51,7 @@ const TikTokShopOAuth = () => {
   };
 
   // Exchange authorization code for tokens
-  const exchangeCode = async () => {
+  const exchangeCode = useCallback(async () => {
     if (!authCode.trim()) {
       setError('Please enter an authorization code');
       return;
@@ -51,15 +60,29 @@ const TikTokShopOAuth = () => {
     try {
       setLoading(true);
       setError('');
-      const response = await axios.post(`${API_BASE}/tiktok/exchange_code?auth_code=${encodeURIComponent(authCode)}`);
-      setTokenData(response.data.token_data);
-      setAccessToken(response.data.token_data.access_token);
+      setSuccess('');
+      const response = await apiClient.post('/tiktok/exchange_code?auth_code=' + encodeURIComponent(authCode));
+      const newTokenData = response.data.token_data;
+      
+      setTokenData(newTokenData);
+      setAccessToken(newTokenData.access_token);
+      
+      // Use AuthContext to login
+      login(newTokenData);
+      
+      setSuccess(`✅ Login successful! Welcome ${newTokenData.seller_name}. Redirecting to dashboard...`);
+      
+      // Show success message briefly, then redirect
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
+      
     } catch (err) {
       setError(`Error exchanging code: ${err.response?.data?.detail || err.message}`);
     } finally {
       setLoading(false);
     }
-  };
+  }, [authCode, login, navigate]);
 
   // Test the access token
   const testToken = async () => {
@@ -71,8 +94,27 @@ const TikTokShopOAuth = () => {
     try {
       setLoading(true);
       setError('');
-      const response = await axios.get(`${API_BASE}/tiktok/test_token?access_token=${encodeURIComponent(accessToken)}`);
+      setSuccess('');
+      const response = await apiClient.get('/tiktok/test_token?access_token=' + encodeURIComponent(accessToken));
       setTestResult(response.data);
+      
+      // If token is valid, store it and redirect
+      if (response.data.status === 'valid') {
+        const mockTokenData = {
+          access_token: accessToken,
+          shop_id: response.data.shop_data?.shop_id || 'unknown',
+          shop_name: response.data.shop_data?.shop_name || 'Unknown Shop',
+          seller_name: response.data.shop_data?.seller_name || 'Unknown Seller'
+        };
+        
+        login(mockTokenData);
+        
+        setSuccess('✅ Token is valid! Redirecting to dashboard...');
+        
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
+      }
     } catch (err) {
       setError(`Error testing token: ${err.response?.data?.detail || err.message}`);
     } finally {
@@ -90,9 +132,17 @@ const TikTokShopOAuth = () => {
     try {
       setLoading(true);
       setError('');
-      const response = await axios.post(`${API_BASE}/tiktok/refresh_token?refresh_token=${encodeURIComponent(tokenData.refresh_token)}`);
-      setTokenData(response.data);
-      setAccessToken(response.data.access_token);
+      const response = await apiClient.post('/tiktok/refresh_token?refresh_token=' + encodeURIComponent(tokenData.refresh_token));
+      const newTokenData = response.data;
+      
+      setTokenData(newTokenData);
+      setAccessToken(newTokenData.access_token);
+      
+      // Update stored tokens
+      localStorage.setItem('tiktok_access_token', newTokenData.access_token);
+      localStorage.setItem('tiktok_refresh_token', newTokenData.refresh_token);
+      localStorage.setItem('tiktok_token_data', JSON.stringify(newTokenData));
+      
     } catch (err) {
       setError(`Error refreshing token: ${err.response?.data?.detail || err.message}`);
     } finally {
@@ -108,8 +158,12 @@ const TikTokShopOAuth = () => {
       setAuthCode(code);
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
+      // Automatically exchange the code
+      setTimeout(() => {
+        exchangeCode();
+      }, 500);
     }
-  }, []);
+  }, [exchangeCode]);
 
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', fontFamily: 'Arial, sans-serif' }}>
@@ -125,6 +179,43 @@ const TikTokShopOAuth = () => {
           color: '#c00'
         }}>
           <strong>Error:</strong> {error}
+        </div>
+      )}
+
+      {success && (
+        <div style={{ 
+          backgroundColor: '#e8f5e8', 
+          border: '1px solid #d3e3d3', 
+          padding: '10px', 
+          borderRadius: '4px',
+          marginBottom: '20px',
+          color: '#006400'
+        }}>
+          <strong>Success:</strong> {success}
+        </div>
+      )}
+
+      {/* Logout Section */}
+      {isAuthenticated && (
+        <div style={{ marginBottom: '30px', padding: '20px', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#f0f8ff' }}>
+          <h2>Current Session</h2>
+          <p>You are currently logged in. Click below to logout:</p>
+          <button 
+            onClick={() => {
+              logout();
+              window.location.reload();
+            }}
+            style={{ 
+              padding: '10px 20px', 
+              backgroundColor: '#dc3545', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Logout
+          </button>
         </div>
       )}
 

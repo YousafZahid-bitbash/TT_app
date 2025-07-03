@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './SampleDistributionLog.css';
+import { API_URL as API_BASE } from '../api/api';
 
 const SampleDistributionLog = () => {
   const [applications, setApplications] = useState([]);
@@ -42,7 +43,7 @@ const SampleDistributionLog = () => {
         page_no: currentPage.toString()
       });
 
-      const response = await fetch(`api/sample_applications?${params}`);
+      const response = await fetch(`${API_BASE}/sample_applications?${params}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -67,7 +68,7 @@ const SampleDistributionLog = () => {
         end_date: endDate
       });
 
-      const response = await fetch(`api/sample_applications/statistics?${params}`);
+      const response = await fetch(`${API_BASE}/sample_applications/statistics?${params}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -90,7 +91,7 @@ const SampleDistributionLog = () => {
       });
 
       const response = await fetch(
-        `api/sample_applications/${applicationId}/update_status?${params}`,
+        `${API_BASE}/sample_applications/${applicationId}/update_status?${params}`,
         { method: 'POST' }
       );
       

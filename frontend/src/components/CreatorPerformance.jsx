@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { apiClient } from '../api/api';
 
 const CreatorPerformance = () => {
   const { brandId } = useParams(); 
@@ -61,7 +61,7 @@ const CreatorPerformance = () => {
         // });
 
         // Fetch top-performing creators for each period (Yesterday, Current Week, and Month to Date)
-        const dailycreatorsResponse = await axios.get('/api/top_performing_creators', {
+        const dailycreatorsResponse = await apiClient.get('/top_performing_creators', {
           params: {
             start_time: formattedYesterday,
             end_time: formattedYesterday,
@@ -69,7 +69,7 @@ const CreatorPerformance = () => {
             page_no: 1
           }
         });
-        const weaklycreatorsResponse = await axios.get('/api/top_performing_creators', {
+        const weaklycreatorsResponse = await apiClient.get('/top_performing_creators', {
           params: {
             start_time: startOfWeek,
             end_time: formattedEndOfWeek,
@@ -77,7 +77,7 @@ const CreatorPerformance = () => {
             page_no: 1
           }
         });
-        const monthlycreatorsResponse = await axios.get('/api/top_performing_creators', {
+        const monthlycreatorsResponse = await apiClient.get('/top_performing_creators', {
           params: {
             start_date: startOfMonth, // Start of current month
             end_date: formattedEndOfMonth, // End of current month (today)
@@ -86,7 +86,7 @@ const CreatorPerformance = () => {
           }
         });
 
-        const dailygmvPervideo = await axios.get('/api/Gmv_per_video', {
+        const dailygmvPervideo = await apiClient.get('/Gmv_per_video', {
           params: {
             start_time: formattedYesterday,
             end_time: formattedYesterday,
@@ -94,7 +94,7 @@ const CreatorPerformance = () => {
             page_no: 1
           }
         });
-        const weeklygmvPervideo = await axios.get('/api/Gmv_per_video', {
+        const weeklygmvPervideo = await apiClient.get('/Gmv_per_video', {
           params: {
             start_time: startOfWeek,
             end_time: formattedEndOfWeek,
@@ -102,7 +102,7 @@ const CreatorPerformance = () => {
             page_no: 1
           }
         });
-        const monthlygmvPervideo = await axios.get('/api/Gmv_per_video', {
+        const monthlygmvPervideo = await apiClient.get('/Gmv_per_video', {
           params: {
             start_date: startOfMonth, // Start of current month
             end_date: formattedEndOfMonth, // End of current month (today)
@@ -110,7 +110,7 @@ const CreatorPerformance = () => {
             page_no: 1
           }
         });
-        const dailyRefundrate = await axios.get('/api/calculate_refund_rate', {
+        const dailyRefundrate = await apiClient.get('/calculate_refund_rate', {
           params: {
             start_time: formattedYesterday,
             end_time: formattedYesterday,
@@ -118,7 +118,7 @@ const CreatorPerformance = () => {
             page_no: 1
           }
         });
-        const weeklyRefundrate = await axios.get('/api/calculate_refund_rate', {
+        const weeklyRefundrate = await apiClient.get('/calculate_refund_rate', {
           params: {
             start_time: startOfWeek,
             end_time: formattedEndOfWeek,
@@ -126,7 +126,7 @@ const CreatorPerformance = () => {
             page_no: 1
           }
         });
-        const monthlyRefundrate = await axios.get('/api/calculate_refund_rate', {
+        const monthlyRefundrate = await apiClient.get('/calculate_refund_rate', {
           params: {
             start_date: startOfMonth, // Start of current month
             end_date: formattedEndOfMonth, // End of current month (today)
