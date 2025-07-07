@@ -77,7 +77,7 @@ const TikTokShopOAuth = () => {
       backgroundAttachment: 'fixed',
       overflow: 'hidden',
     }}>
-      <div style={{
+        <div style={{ 
         background: 'rgba(255,255,255,0.25)',
         boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
         backdropFilter: 'blur(12px)',
@@ -109,26 +109,26 @@ const TikTokShopOAuth = () => {
         </h1>
         {error && (
           <div style={{ backgroundColor: '#fee', border: '1px solid #fcc', padding: '10px', borderRadius: '6px', marginBottom: '20px', color: '#c00', fontWeight: 500 }}>
-            <strong>Error:</strong> {error}
-          </div>
-        )}
-        {success && (
+          <strong>Error:</strong> {error}
+        </div>
+      )}
+      {success && (
           <div style={{ backgroundColor: '#e8f5e8', border: '1px solid #d3e3d3', padding: '10px', borderRadius: '6px', marginBottom: '20px', color: '#006400', fontWeight: 500 }}>
-            <strong>Success:</strong> {success}
+          <strong>Success:</strong> {success}
           </div>
         )}
-        <button
-          onClick={startOAuthFlow}
+        <button 
+          onClick={startOAuthFlow} 
           disabled={loading}
-          style={{
+          style={{ 
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             width: '100%',
             padding: '16px 0',
             background: 'linear-gradient(90deg, #25f4ee 0%, #010101 60%, #fe2c55 100%)',
-            color: 'white',
-            border: 'none',
+            color: 'white', 
+            border: 'none', 
             borderRadius: '12px',
             fontSize: '1.15rem',
             fontWeight: 700,
@@ -147,7 +147,7 @@ const TikTokShopOAuth = () => {
         </button>
         <div style={{ marginTop: 32, color: '#222', fontSize: '1rem', opacity: 0.7, fontWeight: 400 }}>
           Secure TikTok Shop authentication for creators & sellers
-        </div>
+      </div>
       </div>
       {/* Decorative floating shapes */}
       <div style={{

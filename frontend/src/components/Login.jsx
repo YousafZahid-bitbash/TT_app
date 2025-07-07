@@ -39,7 +39,6 @@ const Login = () => {
       minHeight: '100vh',
       width: '100vw',
       display: 'flex',
-      flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
       background: 'linear-gradient(120deg, #25f4ee 0%, #fe2c55 50%, #fff1f7 100%)',
@@ -47,127 +46,179 @@ const Login = () => {
       overflow: 'hidden',
     }}>
       <div style={{
-        background: 'rgba(255,255,255,0.25)',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        borderRadius: '24px',
-        border: '1.5px solid rgba(255,255,255,0.25)',
-        padding: '48px 36px',
-        minWidth: 340,
-        maxWidth: 400,
-        textAlign: 'center',
-        animation: 'fadeIn 1.2s cubic-bezier(.39,.575,.565,1) both',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        maxWidth: 1200,
+        gap: 56,
       }}>
-        <style>{`
-          @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(40px) scale(0.98); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-          }
-        `}</style>
-        <h1 style={{
-          marginBottom: 28,
-          fontWeight: 800,
-          fontSize: '2.2rem',
-          letterSpacing: '-1px',
-          background: 'linear-gradient(90deg, #25f4ee 0%, #010101 40%, #fe2c55 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
+        {/* Left side image container */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: 1,
         }}>
-          Welcome Back
-        </h1>
-        {error && (
-          <div style={{ backgroundColor: '#fee', border: '1px solid #fcc', padding: '10px', borderRadius: '6px', marginBottom: '20px', color: '#c00', fontWeight: 500 }}>
-            <strong>Error:</strong> {error}
+          <div style={{
+            background: 'rgba(255,255,255,0.25)',
+            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
+            borderRadius: '32px',
+            padding: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: 630,
+            minWidth: 1100,
+            maxWidth: 1000000,
+            
+          }}>
+            <img
+              src={process.env.PUBLIC_URL + '/dash.png'}
+              alt="Dashboard Visual"
+              style={{
+                width: '100%',
+                height: '100%',
+                // maxWidth: 500000,
+                borderRadius: '24px',
+                boxShadow: '0 4px 24px rgba(31,38,135,0.10)',
+                objectFit: 'cover',
+              }}
+            />
           </div>
-        )}
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={form.username}
-            onChange={handleChange}
-            required
-            style={{
-              width: '100%',
-              marginBottom: 14,
-              padding: '12px 14px',
-              borderRadius: 8,
-              border: '1.5px solid #e0e0e0',
-              fontSize: 16,
-              background: 'rgba(255,255,255,0.7)',
-              outline: 'none',
-              transition: 'border 0.2s',
-              boxSizing: 'border-box',
-            }}
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-            style={{
-              width: '100%',
-              marginBottom: 14,
-              padding: '12px 14px',
-              borderRadius: 8,
-              border: '1.5px solid #e0e0e0',
-              fontSize: 16,
-              background: 'rgba(255,255,255,0.7)',
-              outline: 'none',
-              transition: 'border 0.2s',
-              boxSizing: 'border-box',
-            }}
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            required
-            style={{
-              width: '100%',
-              marginBottom: 22,
-              padding: '12px 14px',
-              borderRadius: 8,
-              border: '1.5px solid #e0e0e0',
-              fontSize: 16,
-              background: 'rgba(255,255,255,0.7)',
-              outline: 'none',
-              transition: 'border 0.2s',
-              boxSizing: 'border-box',
-            }}
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '16px 0',
-              borderRadius: '12px',
-              background: 'linear-gradient(90deg, #25f4ee 0%, #010101 60%, #fe2c55 100%)',
-              color: 'white',
-              fontWeight: 700,
-              fontSize: '1.15rem',
-              border: 'none',
-              boxShadow: '0 2px 12px rgba(31,38,135,0.10)',
-              letterSpacing: '0.5px',
-              marginTop: 8,
-              marginBottom: 8,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              transition: 'transform 0.12s',
-              outline: 'none',
-            }}
-          >
-            {loading ? 'Processing...' : 'Login'}
-          </button>
-        </form>
-        <div style={{ marginTop: 32, color: '#222', fontSize: '1rem', opacity: 0.7, fontWeight: 400 }}>
-          Please enter your credentials to continue
+        </div>
+        {/* Right side login form container */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: 1,
+        }}>
+          <div style={{
+            background: 'rgba(255,255,255,0.25)',
+            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            borderRadius: '32px',
+            border: '1.5px solid rgba(255,255,255,0.25)',
+            padding: '48px 36px',
+            minWidth: 340,
+            maxWidth: 400,
+            textAlign: 'center',
+            animation: 'fadeIn 1.2s cubic-bezier(.39,.575,.565,1) both',
+          }}>
+            <style>{`
+              @keyframes fadeIn {
+                0% { opacity: 0; transform: translateY(40px) scale(0.98); }
+                100% { opacity: 1; transform: translateY(0) scale(1); }
+              }
+            `}</style>
+            <h1 style={{
+              marginBottom: 28,
+              fontWeight: 800,
+              fontSize: '2.2rem',
+              letterSpacing: '-1px',
+              background: 'linear-gradient(90deg, #25f4ee 0%, #010101 40%, #fe2c55 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}>
+              Welcome Back
+            </h1>
+            {error && (
+              <div style={{ backgroundColor: '#fee', border: '1px solid #fcc', padding: '10px', borderRadius: '6px', marginBottom: '20px', color: '#c00', fontWeight: 500 }}>
+                <strong>Error:</strong> {error}
+              </div>
+            )}
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                value={form.username}
+                onChange={handleChange}
+                required
+                style={{
+                  width: '100%',
+                  marginBottom: 14,
+                  padding: '12px 14px',
+                  borderRadius: 8,
+                  border: '1.5px solid #e0e0e0',
+                  fontSize: 16,
+                  background: 'rgba(255,255,255,0.7)',
+                  outline: 'none',
+                  transition: 'border 0.2s',
+                  boxSizing: 'border-box',
+                }}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                style={{
+                  width: '100%',
+                  marginBottom: 14,
+                  padding: '12px 14px',
+                  borderRadius: 8,
+                  border: '1.5px solid #e0e0e0',
+                  fontSize: 16,
+                  background: 'rgba(255,255,255,0.7)',
+                  outline: 'none',
+                  transition: 'border 0.2s',
+                  boxSizing: 'border-box',
+                }}
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={form.password}
+                onChange={handleChange}
+                required
+                style={{
+                  width: '100%',
+                  marginBottom: 22,
+                  padding: '12px 14px',
+                  borderRadius: 8,
+                  border: '1.5px solid #e0e0e0',
+                  fontSize: 16,
+                  background: 'rgba(255,255,255,0.7)',
+                  outline: 'none',
+                  transition: 'border 0.2s',
+                  boxSizing: 'border-box',
+                }}
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  width: '100%',
+                  padding: '16px 0',
+                  borderRadius: '12px',
+                  background: 'linear-gradient(90deg, #25f4ee 0%, #010101 60%, #fe2c55 100%)',
+                  color: 'white',
+                  fontWeight: 700,
+                  fontSize: '1.15rem',
+                  border: 'none',
+                  boxShadow: '0 2px 12px rgba(31,38,135,0.10)',
+                  letterSpacing: '0.5px',
+                  marginTop: 8,
+                  marginBottom: 8,
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  transition: 'transform 0.12s',
+                  outline: 'none',
+                }}
+              >
+                {loading ? 'Processing...' : 'Login'}
+              </button>
+            </form>
+            <div style={{ marginTop: 32, color: '#222', fontSize: '1rem', opacity: 0.7, fontWeight: 400 }}>
+              Please enter your credentials to continue
+            </div>
+          </div>
         </div>
       </div>
       {/* Decorative floating shapes */}

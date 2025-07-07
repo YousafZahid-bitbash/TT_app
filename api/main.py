@@ -25,44 +25,47 @@ import hashlib
 import os
 
 # Import from your new utils file instead of defining locally
-from .tiktok_utils import generate_signature, APP_KEY, APP_SECRET, ACCESS_TOKEN, BASE_URL, SERVICE_ID
-from .tiktok_auth import router as tiktok_auth_router
+# from .tiktok_utils import generate_signature, APP_KEY, APP_SECRET, ACCESS_TOKEN, BASE_URL, SERVICE_ID
+# from .tiktok_auth import router as tiktok_auth_router
+
+from tiktok_utils import generate_signature, APP_KEY, APP_SECRET, ACCESS_TOKEN, BASE_URL, SERVICE_ID
+from tiktok_auth import router as tiktok_auth_router
 # Load environment variables
 load_dotenv()
 
 # Fetch variables
-USER = os.getenv("user")
-PASSWORD = os.getenv("password")
-HOST = os.getenv("host")
-PORT = os.getenv("port")
-DBNAME = os.getenv("dbname")
+# USER = os.getenv("user")
+# PASSWORD = os.getenv("password")
+# HOST = os.getenv("host")
+# PORT = os.getenv("port")
+# DBNAME = os.getenv("dbname")
 
-# Connect to the database
-try:
-    connection = psycopg2.connect(
-        user=USER,
-        password=PASSWORD,
-        host=HOST,
-        port=PORT,
-        dbname=DBNAME
-    )
-    print("Connection successful!")
+# # Connect to the database
+# try:
+#     connection = psycopg2.connect(
+#         user=USER,
+#         password=PASSWORD,
+#         host=HOST,
+#         port=PORT,
+#         dbname=DBNAME
+#     )
+#     print("Connection successful!")
     
-    # Create a cursor to execute SQL queries
-    cursor = connection.cursor()
+#     # Create a cursor to execute SQL queries
+#     cursor = connection.cursor()
     
-    # Example query
-    cursor.execute("SELECT NOW();")
-    result = cursor.fetchone()
-    print("Current Time:", result)
+#     # Example query
+#     cursor.execute("SELECT NOW();")
+#     result = cursor.fetchone()
+#     print("Current Time:", result)
 
-    # Close the cursor and connection
-    cursor.close()
-    connection.close()
-    print("Connection closed.")
+#     # Close the cursor and connection
+#     cursor.close()
+#     connection.close()
+#     print("Connection closed.")
 
-except Exception as e:
-    print(f"Failed to connect: {e}")
+# except Exception as e:
+#     print(f"Failed to connect: {e}")
     
 #Supabase Connection    
 SUPABASE_URL = os.getenv("SUPABASE_URL")
