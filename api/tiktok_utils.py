@@ -13,7 +13,7 @@ APP_KEY = os.getenv("APP_KEY")
 APP_SECRET = os.getenv("APP_SECRET")
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
 BASE_URL = os.getenv("BASE_URL", "https://partner.us.tiktokshop.com/")
-REDIRECT_URI=os.getenv("REDIRECT_URI","https://50f3-39-45-29-161.ngrok-free.app/tiktok/callback")
+REDIRECT_URI = os.getenv("REDIRECT_URI", "https://yourdomain.com/tiktok/callback")
 SERVICE_ID = os.getenv("SERVICE_ID")
 
 def generate_signature(request_method: str, url: str, headers: dict, body: Optional[str], app_secret: str) -> str:

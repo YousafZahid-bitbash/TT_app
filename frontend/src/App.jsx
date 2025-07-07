@@ -1,7 +1,7 @@
 // src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+// import { AuthProvider, useAuth } from './context/AuthContext';
 import DashboardPage from './pages/DashboardPage'; // Dashboard component
 import ShopPerformancePage from './pages/ShopPerfomancePage'; // ShopPerformance component (mock for now)
 import CreatorPerformancePage from './pages/CreatorPerfomancePage'; // CreatorPerformance component (mock for now)
@@ -14,93 +14,39 @@ import InventoryTrackerPage from './pages/InventoryTrackerPage';
 import TopSellingSkuPage from './pages/TopSellingSkuPage';
 import SampleDistributionLogPage from './pages/SampleDistributionLogPage';
 import AlertsPage from './pages/AlertsPage'; // Import AlertsPage
+import Login from './components/Login';
 
-// Protected Route Component
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
-  
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-  
-  return children;
-};
+// const ProtectedRoute = ({ children }) => {
+//   const { isAuthenticated, loading } = useAuth();
+//   if (loading) {
+//     return <div>Loading...</div>;
+//   }
+//   if (!isAuthenticated) {
+//     return <Navigate to="/" replace />;
+//   }
+//   return children;
+// };
 
 const AppRoutes = () => {
-  const { isAuthenticated } = useAuth();
-
+  // const { isAuthenticated } = useAuth();
   return (
     <div className="app-container">
       <Routes>
-        <Route path="/" element={
-          isAuthenticated ? <Navigate to="/dashboard" replace /> : <TikTokLogin />
-        } />
-        
-        {/* Protected Routes */}
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/shop-performance" element={
-          <ProtectedRoute>
-            <ShopPerformancePage />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/creator-performance" element={
-          <ProtectedRoute>
-            <CreatorPerformancePage />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/alerts" element={
-          <ProtectedRoute>
-            <AlertsPage />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/backend-metrics" element={
-          <ProtectedRoute>
-            <BackendMetrices />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/backend-metrics/inventory" element={
-          <ProtectedRoute>
-            <InventoryTrackerPage />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/backend-metrics/top-skus" element={
-          <ProtectedRoute>
-            <TopSellingSkuPage />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/backend-metrics/samples" element={
-          <ProtectedRoute>
-            <SampleDistributionLogPage />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/backend-metrics/communication" element={
-          <ProtectedRoute>
-            <BackendMetrices />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/backend-metrics/promotions" element={
-          <ProtectedRoute>
-            <BackendMetrices />
-          </ProtectedRoute>
-        } />
-        
+        {/* Default route: show Login page */}
+        <Route path="/" element={<Login />} />
+        {/* TikTokLogin page route */}
+        <Route path="/tiktoklogin" element={<TikTokLogin />} />
+        {/* Unprotected Routes */}
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/shop-performance" element={<ShopPerformancePage />} />
+        <Route path="/creator-performance" element={<CreatorPerformancePage />} />
+        <Route path="/alerts" element={<AlertsPage />} />
+        <Route path="/backend-metrics" element={<BackendMetrices />} />
+        <Route path="/backend-metrics/inventory" element={<InventoryTrackerPage />} />
+        <Route path="/backend-metrics/top-skus" element={<TopSellingSkuPage />} />
+        <Route path="/backend-metrics/samples" element={<SampleDistributionLogPage />} />
+        <Route path="/backend-metrics/communication" element={<BackendMetrices />} />
+        <Route path="/backend-metrics/promotions" element={<BackendMetrices />} />
         {/* Admin Routes */}
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/shop/:brandId" element={<AdminShopDetailPage />} />
@@ -111,11 +57,9 @@ const AppRoutes = () => {
 
 const App = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
-    </AuthProvider>
+    <Router>
+      <AppRoutes />
+    </Router>
   );
 };
 

@@ -51,7 +51,6 @@ async def tiktok_shop_login():
 
 @router.get("/tiktok/auth_url")
 async def get_auth_url():
-    """Get the authorization URL with instructions"""
     if not SERVICE_ID:
         raise HTTPException(status_code=400, detail="SERVICE_ID not configured")
     
@@ -115,6 +114,7 @@ async def tiktok_shop_callback(request: Request):
     
     try:
         token_data = await exchange_code_for_token(auth_code)
+        
         return {
             "message": "Authorization successful!",
             "token_data": token_data,
@@ -160,20 +160,9 @@ async def exchange_code_for_token(auth_code: str) -> dict:
         data = response_data.get("data", {})
         if not data:
             raise HTTPException(status_code=400, detail="No token data found in response")
+        #write code to save the data to database
         
         return data
         
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Request failed: {str(e)}")
-
-@router.post("/tiktok/exchange_code")
-async def manual_exchange_code(auth_code: str = Query(..., description="Authorization code from TikTok Shop")):
-    """Manually exchange authorization code for access token"""
-    try:
-        token_data = await exchange_code_for_token(auth_code)
-        return {
-            "status": "success",
-            "token_data": token_data
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))

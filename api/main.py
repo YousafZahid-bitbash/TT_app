@@ -27,7 +27,6 @@ import os
 # Import from your new utils file instead of defining locally
 from .tiktok_utils import generate_signature, APP_KEY, APP_SECRET, ACCESS_TOKEN, BASE_URL, SERVICE_ID
 from .tiktok_auth import router as tiktok_auth_router
-from .cookie_test import router as cookie_test_router
 # Load environment variables
 load_dotenv()
 
@@ -65,12 +64,12 @@ try:
 except Exception as e:
     print(f"Failed to connect: {e}")
     
-# Change with Actual Supabase credentials
-SUPABASE_URL = "https://sdzjbxrlsmmevajkbavw.supabase.co"
-SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkempieHJsc21tZXZhamtiYXZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzMjA3MjEsImV4cCI6MjA2NTg5NjcyMX0.zTdr6zIQGq7oc7uyHeOeivl4GT_hbYjKkXxxaUn-KqI"
-
+#Supabase Connection    
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_API_KEY = os.getenv("SUPABASE_API_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_API_KEY)
 
+#Slack Connection
 SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL") 
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")      
 SLACK_CHANNEL = os.getenv("SLACK_CHANNEL", "#all-tiktok")  
@@ -78,11 +77,15 @@ SLACK_CHANNEL = os.getenv("SLACK_CHANNEL", "#all-tiktok")
 
 app = FastAPI()
 
+#Backend and Frontend Communication Connection
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Local development (React app on localhost)
         "https://tt-app-frontend.vercel.app",  # Your deployed frontend URL on Vercel (replace this with your actual Vercel URL)
+        "https://tt-app-frontend-yousaf-zahids-projects.vercel.app/",
+        "https://tt-app-frontend-yousafzahid-bitbash-yousaf-zahids-projects.vercel.app/",
+        "https://tt-app-frontend-bwkwtm1zc-yousaf-zahids-projects.vercel.app/",
         "https://*.vercel.app",  # Allow all Vercel subdomains (useful if you have multiple environments)
     ],
     allow_credentials=True,
@@ -90,9 +93,27 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
+#Router for accessing tiktok_auth.py file 
 app.include_router(tiktok_auth_router)
-app.include_router(cookie_test_router)
-# Function to perform OAuth for Tiktok shop users
+
+
+# Health check endpoint
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "message": "Backend is running!"}
+
+class User(BaseModel): 
+    username: str
+    email: str
+    password: str
+
+@app.post('/register')
+def register(user: User):
+    
+    existing_user = supabase.table('users').select('email').eq('email', user.email).execute
+    if existing_user.data:
+        raise HTTPException
+
 
 # Function to make the actual API request
 def call_tiktok_api(path: str, params: dict = None, method: str = "GET", json_body: dict = None):

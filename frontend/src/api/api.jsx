@@ -16,12 +16,12 @@ export const apiClient = axios.create({
 });
 
 // A function to fetch dashboard data
-const fetchDashboardData = async () => {
-  try {
-    const response = await axios.get(API_URL);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching dashboard data:', error);
-    throw error;
-  }
-};
+// const fetchDashboardData = async () => {
+//   try {
+//     const response = await axios.get(API_URL);
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error fetching dashboard data:', error);
+//     throw error;
+//   }
+// };
