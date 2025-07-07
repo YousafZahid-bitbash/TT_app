@@ -3,10 +3,10 @@ import axios from 'axios';
 
 // Environment-aware API URL configuration
 export const API_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://tt-app-backend.vercel.app'  // Your backend Vercel URL
+  ? 'https://tiktok-backend-crd5l.ondigitalocean.app'  // ✅ Remove trailing slash
   : 'http://127.0.0.1:8000';  // Local development
 
-// Create axios instance with base configuration
+// Rest of your code stays exactly the same...
 export const apiClient = axios.create({
   baseURL: API_URL,
   timeout: 10000,

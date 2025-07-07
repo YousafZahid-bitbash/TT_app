@@ -1,6 +1,6 @@
 // src/App.jsx
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import DashboardPage from './pages/DashboardPage'; // Dashboard component
 import ShopPerformancePage from './pages/ShopPerfomancePage'; // ShopPerformance component (mock for now)
