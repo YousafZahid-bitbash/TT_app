@@ -45,7 +45,22 @@ const Login = () => {
       backgroundAttachment: 'fixed',
       overflow: 'hidden',
     }}>
-      <div style={{
+      <style>{`
+        @media (max-width: 1200px) {
+          .login-flex-wrap {
+            flex-direction: column !important;
+            gap: 32px !important;
+          }
+        }
+        @media (max-width: 700px) {
+          .login-flex-wrap > div {
+            min-width: 90vw !important;
+            max-width: 98vw !important;
+            min-height: 320px !important;
+          }
+        }
+      `}</style>
+      <div className="login-flex-wrap" style={{
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
@@ -53,6 +68,7 @@ const Login = () => {
         width: '100%',
         maxWidth: 1200,
         gap: 56,
+        flexWrap: 'wrap',
       }}>
         {/* Left side image container */}
         <div style={{
@@ -67,12 +83,12 @@ const Login = () => {
             borderRadius: '32px',
             padding: 2,
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             minHeight: 630,
             minWidth: 1100,
             maxWidth: 1000000,
-            
           }}>
             <img
               src={process.env.PUBLIC_URL + '/dash.png'}
@@ -80,12 +96,23 @@ const Login = () => {
               style={{
                 width: '100%',
                 height: '100%',
-                // maxWidth: 500000,
                 borderRadius: '24px',
                 boxShadow: '0 4px 24px rgba(31,38,135,0.10)',
                 objectFit: 'cover',
               }}
             />
+            <div style={{
+              marginTop: 24,
+              textAlign: 'center',
+              fontSize: '1.25rem',
+              color: '#222',
+              fontWeight: 600,
+              letterSpacing: '0.5px',
+              opacity: 0.85,
+              textShadow: '0 2px 8px rgba(31,38,135,0.06)',
+            }}>
+              Your Dashboard, Visualized
+            </div>
           </div>
         </div>
         {/* Right side login form container */}
