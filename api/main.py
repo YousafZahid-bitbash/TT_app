@@ -1,4 +1,7 @@
 # At the top of your main.py, replace the imports and constants:
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from fastapi import FastAPI, HTTPException, Query, Path, Request
 from urllib.parse import urlparse, parse_qs, urlencode
@@ -22,14 +25,15 @@ import json
 import time
 import hmac
 import hashlib
-import os
+
 
 # Import from your new utils file instead of defining locally
-# from .tiktok_utils import generate_signature, APP_KEY, APP_SECRET, ACCESS_TOKEN, BASE_URL, SERVICE_ID
-# from .tiktok_auth import router as tiktok_auth_router
 
-from tiktok_utils import generate_signature, APP_KEY, APP_SECRET, ACCESS_TOKEN, BASE_URL, SERVICE_ID
+# from .tiktok_utils import generate_signature, APP_KEY, APP_SECRET, BASE_URL, SERVICE_ID
+# from .tiktok_auth import router as tiktok_auth_router
+from tiktok_utils import generate_signature, APP_KEY, APP_SECRET, BASE_URL, SERVICE_ID
 from tiktok_auth import router as tiktok_auth_router
+
 # Load environment variables
 load_dotenv()
 
@@ -67,6 +71,25 @@ load_dotenv()
 # except Exception as e:
 #     print(f"Failed to connect: {e}")
     
+# Add this function at the top of your main.py after your imports
+# Replace your async get_access_token function with this:
+def get_access_token_sync():
+    """Synchronous function to get access token from database"""
+    try:
+        # Get the most recent access token from database
+        result = supabase.table("tiktok_integrations").select("access_token, shop_id, shop_cipher").order("updated_at", desc=True).limit(1).execute()
+        
+        if not result.data:
+            print("⚠️ No TikTok integration found in database")
+            return None, None, None
+        
+        integration = result.data[0]
+        return integration["access_token"], integration.get("shop_id"), integration.get("shop_cipher")
+        
+    except Exception as e:
+        print(f"❌ Error getting access token: {str(e)}")
+        return None, None, None
+
 #Supabase Connection    
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_API_KEY = os.getenv("SUPABASE_API_KEY")
@@ -77,6 +100,7 @@ SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")      
 SLACK_CHANNEL = os.getenv("SLACK_CHANNEL", "#all-tiktok")  
 
+ACCESS_TOKEN, shop_id, shop_cipher = get_access_token_sync()
 
 app = FastAPI()
 
@@ -122,6 +146,8 @@ def register(user: User):
 def call_tiktok_api(path: str, params: dict = None, method: str = "GET", json_body: dict = None):
     if params is None:
         params = {}
+
+    
     timestamp = str(int(time.time()))
     base_params = {
         "access_token": ACCESS_TOKEN,

@@ -1,17 +1,21 @@
-
+import os
 import time
 import random
 import string
 import json
-from fastapi import APIRouter, HTTPException, Query, Request
-from fastapi.responses import JSONResponse
+import requests
+from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import Optional
-import requests
+
 from urllib.parse import urlencode
-from .tiktok_utils import generate_signature, APP_KEY, APP_SECRET, ACCESS_TOKEN, BASE_URL, SERVICE_ID, REDIRECT_URI
-import os
-from dotenv import load_dotenv
+from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi.responses import JSONResponse
+
+from tiktok_utils import generate_signature, APP_KEY, APP_SECRET, BASE_URL, SERVICE_ID, REDIRECT_URI
+# from .tiktok_utils import generate_signature, APP_KEY, APP_SECRET, BASE_URL, SERVICE_ID, REDIRECT_URI
+#from tiktok_utils import generate_signature, APP_KEY, APP_SECRET, BASE_URL, SERVICE_ID, REDIRECT_URI
+
 
 load_dotenv()
 
