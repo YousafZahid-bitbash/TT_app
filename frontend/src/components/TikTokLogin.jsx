@@ -67,7 +67,11 @@ const TikTokShopOAuth = () => {
 
   return (
     <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
       minHeight: '100vh',
+      height: '100vh',
       width: '100vw',
       display: 'flex',
       flexDirection: 'column',
@@ -76,7 +80,20 @@ const TikTokShopOAuth = () => {
       background: 'linear-gradient(120deg, #25f4ee 0%, #fe2c55 50%, #fff1f7 100%)',
       backgroundAttachment: 'fixed',
       overflow: 'hidden',
+      margin: 0,
+      padding: 0,
     }}>
+        <style>{`
+          html, body, #root {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+          }
+          @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(40px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+          }
+        `}</style>
         <div style={{ 
         background: 'rgba(255,255,255,0.25)',
         boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
@@ -90,12 +107,6 @@ const TikTokShopOAuth = () => {
         textAlign: 'center',
         animation: 'fadeIn 1.2s cubic-bezier(.39,.575,.565,1) both',
       }}>
-        <style>{`
-          @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(40px) scale(0.98); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-          }
-        `}</style>
         <h1 style={{
           marginBottom: 28,
           fontWeight: 800,

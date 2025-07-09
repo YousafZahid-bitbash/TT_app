@@ -1,13 +1,191 @@
-/* src/components/UserLayout.css */
+/* src/components/AdminLayout.css */
+
+/* Base layout styles */
 .admin-layout {
-    display: flex;
-    height: 100%; /* Ensure the layout takes full height */
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Sidebar container */
+.admin-sidebar-container {
+  z-index: 1000;
+}
+
+/* Content container */
+.admin-content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Main content */
+.admin-layout .content {
+  flex: 1;
+  padding: 20px;
+  background-color: #f4f4f4;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Hamburger button */
+.admin-hamburger-button {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 2001;
+  width: 48px;
+  height: 48px;
+  background: white;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
+}
+
+.admin-hamburger-button:hover {
+  background: #f9f9f9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.admin-hamburger-button:active {
+  transform: translateY(0);
+}
+
+.admin-hamburger-line {
+  width: 28px;
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  margin: 3px 0;
+  transition: all 0.2s ease;
+}
+
+/* Sidebar overlay for mobile/tablet */
+.admin-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1500;
+  backdrop-filter: blur(2px);
+}
+
+/* Desktop styles (>1024px) */
+@media (min-width: 1025px) {
+  .admin-layout[data-screen="desktop"] {
+    flex-direction: row;
   }
   
-  .content {
-    flex-grow: 1; /* Takes the remaining space */
-    padding: 20px;
-    background-color: #f4f4f4;
-    overflow-y: auto; /* For scrolling if content exceeds the height */
-    height: 100%;  /* Ensure content stretches to fill available height */
+  .admin-layout[data-screen="desktop"] .admin-sidebar-container {
+    min-width: 256px;
+    max-width: 256px;
+    position: relative;
   }
+  
+  .admin-layout[data-screen="desktop"] .admin-content-container {
+    flex-direction: row;
+  }
+  
+  .admin-layout[data-screen="desktop"] .content {
+    padding: 24px;
+  }
+  
+  .admin-layout[data-screen="desktop"] .admin-hamburger-button {
+    display: none;
+  }
+}
+
+/* Tablet styles (600px - 1024px) */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .admin-layout[data-screen="tablet"] {
+    flex-direction: row; /* Horizontal layout */
+  }
+  
+  .admin-layout[data-screen="tablet"] .admin-sidebar-container.mobile-tablet {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 100vh;
+    z-index: 2000;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    transform: translateX(0);
+    animation: slideInLeft 0.3s ease-out;
+  }
+  
+  .admin-layout[data-screen="tablet"] .admin-content-container {
+    width: 100%;
+    flex-direction: row; /* Horizontal content */
+  }
+  
+  .admin-layout[data-screen="tablet"] .content {
+    width: 100%;
+    padding: 16px;
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
+  }
+}
+
+/* Mobile styles (<600px) */
+@media (max-width: 599px) {
+  .admin-layout[data-screen="mobile"] {
+    flex-direction: column; /* Vertical layout */
+  }
+  
+  .admin-layout[data-screen="mobile"] .admin-sidebar-container.mobile-tablet {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 2000;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    transform: translateX(0);
+    animation: slideInLeft 0.3s ease-out;
+  }
+  
+  .admin-layout[data-screen="mobile"] .admin-content-container {
+    width: 100%;
+    flex-direction: column; /* Vertical content */
+  }
+  
+  .admin-layout[data-screen="mobile"] .content {
+    width: 100%;
+    padding: 12px;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+  }
+}
+
+/* Slide in animation */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Prevent horizontal scrolling on all screen sizes */
+.admin-layout,
+.admin-content-container,
+.admin-layout .content {
+  overflow-x: hidden;
+}
+
+/* Ensure no horizontal scrolling for any elements */
+* {
+  box-sizing: border-box;
+}

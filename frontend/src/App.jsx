@@ -15,6 +15,7 @@ import TopSellingSkuPage from './pages/TopSellingSkuPage';
 import SampleDistributionLogPage from './pages/SampleDistributionLogPage';
 import AlertsPage from './pages/AlertsPage'; // Import AlertsPage
 import Login from './components/Login';
+import Signup from './components/Signup';
 
 // const ProtectedRoute = ({ children }) => {
 //   const { isAuthenticated, loading } = useAuth();
@@ -34,6 +35,8 @@ const AppRoutes = () => {
       <Routes>
         {/* Default route: show Login page */}
         <Route path="/" element={<Login />} />
+        {/* Signup page route */}
+        <Route path="/signup" element={<Signup />} />
         {/* TikTokLogin page route */}
         <Route path="/tiktoklogin" element={<TikTokLogin />} />
         {/* Unprotected Routes */}

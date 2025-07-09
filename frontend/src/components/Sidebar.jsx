@@ -23,9 +23,10 @@ import {
   Target
 } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = (props) => {
   const [userRole, setUserRole] = useState('Brand Admin');
   const [expandedMenus, setExpandedMenus] = useState({});
+  const { sidebarOpen = false, setSidebarOpen, isDesktop = false } = props;
   const location = useLocation();
   const { logout, user } = useAuth();
 
@@ -36,19 +37,26 @@ const Sidebar = () => {
     }));
   };
 
+  // Handle navigation click - close sidebar on mobile/tablet
+  const handleNavClick = () => {
+    if (!isDesktop && setSidebarOpen) {
+      setSidebarOpen(false);
+    }
+  };
+
   const styles = {
     sidebar: {
-      width: '256px',
+      width: '100%',
+      maxWidth: '256px',
       backgroundColor: '#ffffff',
       borderRight: '1px solid #e5e7eb',
       height: '100vh',
       display: 'flex',
       flexDirection: 'column',
       fontFamily: 'system-ui, -apple-system, sans-serif',
-      position: 'fixed',
-      left: 0,
-      top: 0,
-      zIndex: 1000
+      position: 'relative',
+      zIndex: 1000,
+      overflowY: 'auto'
     },
     logoSection: {
       padding: '24px',
@@ -381,11 +389,6 @@ const Sidebar = () => {
     }
   ];
 
-  const filteredNavItems = navigationItems;
-  const filteredSettingsItems = settingsItems.filter(item => 
-    !item.superAdminOnly || userRole === 'Super Admin'
-  );
-
   const handleNavItemHover = (e) => {
     if (!e.target.closest('[data-active="true"]')) {
       Object.assign(e.target.style, styles.navItemHover);
@@ -406,14 +409,51 @@ const Sidebar = () => {
     Object.assign(e.target.style, { ...styles.dropdownItem, backgroundColor: 'transparent' });
   };
 
+  // Touch target style for nav links
+  const touchTarget = {
+    minWidth: 48,
+    minHeight: 48,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  };
+
   return (
     <div style={styles.sidebar}>
+      {/* Close button for mobile/tablet sidebar */}
+      {!isDesktop && sidebarOpen && (
+        <button
+          onClick={() => setSidebarOpen(false)}
+          style={{
+            position: 'absolute',
+            top: 18,
+            right: 18,
+            zIndex: 2002,
+            background: 'white',
+            border: '1.5px solid #e5e7eb',
+            borderRadius: 8,
+            width: 40,
+            height: 40,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 28,
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+          }}
+          aria-label="Close sidebar"
+          tabIndex={0}
+        >
+          ×
+        </button>
+      )}
+      
       {/* Logo Section */}
       <div style={styles.logoSection}>
         <div style={styles.logoContainer}>
           <div style={styles.logoIcon}>
             <img 
-              src="/logo.png"
+              src={process.env.PUBLIC_URL + '/logo.png'}
               alt="TikTok Dashboard Logo"
               style={{
                 width: '100%',
@@ -426,7 +466,7 @@ const Sidebar = () => {
           <span style={styles.logoText}>TikTok Dashboard</span>
         </div>
       </div>
-
+      
       {/* Account Section */}
       <div style={styles.accountSection}>
         <h3 style={styles.accountTitle}>My Account</h3>
@@ -442,24 +482,24 @@ const Sidebar = () => {
           </button>
         </div>
       </div>
-
+      
       {/* Navigation Links */}
       <nav style={styles.nav}>
         {/* Main Navigation - Core MVP Modules */}
         <div style={styles.navSection}>
           <h4 style={styles.sectionTitle}>Core Modules</h4>
           <ul style={styles.navList}>
-            {filteredNavItems.map((item) => {
+            {navigationItems.map((item) => {
               const Icon = item.icon;
               const isExpanded = expandedMenus[item.id];
-              
               return (
-                <li key={item.id}>
+                <li key={item.id} style={touchTarget}>
                   {item.hasDropdown ? (
                     <>
                       <button
                         style={{
                           ...styles.navItemWithDropdown,
+                          ...touchTarget,
                           ...(location.pathname.startsWith(item.href) ? styles.navItemActive : styles.navItemInactive)
                         }}
                         onClick={() => toggleMenu(item.id)}
@@ -467,6 +507,9 @@ const Sidebar = () => {
                         data-active={location.pathname.startsWith(item.href)}
                         onMouseEnter={handleNavItemHover}
                         onMouseLeave={handleNavItemLeave}
+                        aria-expanded={isExpanded}
+                        aria-controls={`dropdown-${item.id}`}
+                        tabIndex={0}
                       >
                         <div style={styles.navItemContent}>
                           <Icon style={styles.navIcon} />
@@ -477,9 +520,8 @@ const Sidebar = () => {
                           <ChevronRight style={styles.chevronIcon} />
                         }
                       </button>
-                      
                       {isExpanded && (
-                        <div style={styles.dropdownContent}>
+                        <div style={styles.dropdownContent} id={`dropdown-${item.id}`}>
                           {item.dropdownItems.map((dropdownItem) => {
                             const DropdownIcon = dropdownItem.icon;
                             return (
@@ -488,11 +530,14 @@ const Sidebar = () => {
                                 to={dropdownItem.href}
                                 style={{
                                   ...styles.dropdownItem,
+                                  ...touchTarget,
                                   ...(location.pathname === dropdownItem.href ? styles.dropdownItemHover : {})
                                 }}
                                 title={dropdownItem.description}
                                 onMouseEnter={handleDropdownItemHover}
                                 onMouseLeave={handleDropdownItemLeave}
+                                onClick={handleNavClick}
+                                tabIndex={0}
                               >
                                 <DropdownIcon style={styles.dropdownIcon} />
                                 {dropdownItem.name}
@@ -507,12 +552,15 @@ const Sidebar = () => {
                       to={item.href}
                       style={{
                         ...styles.navItem,
+                        ...touchTarget,
                         ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive)
                       }}
                       title={item.description}
                       data-active={location.pathname === item.href}
                       onMouseEnter={handleNavItemHover}
                       onMouseLeave={handleNavItemLeave}
+                      onClick={handleNavClick}
+                      tabIndex={0}
                     >
                       <Icon style={styles.navIcon} />
                       {item.name}
@@ -523,24 +571,27 @@ const Sidebar = () => {
             })}
           </ul>
         </div>
-
+        
         {/* Settings Section */}
         <div style={styles.navSection}>
           <h4 style={styles.sectionTitle}>Settings & Configuration</h4>
           <ul style={styles.navList}>
-            {filteredSettingsItems.map((item) => {
+            {settingsItems.filter(item => !item.superAdminOnly || userRole === 'Super Admin').map((item) => {
               const Icon = item.icon;
               return (
-                <li key={item.id}>
+                <li key={item.id} style={touchTarget}>
                   <Link 
                     to={item.href}
                     style={{
                       ...styles.navItem,
+                      ...touchTarget,
                       ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive)
                     }}
                     title={item.description}
                     onMouseEnter={handleNavItemHover}
                     onMouseLeave={handleNavItemLeave}
+                    onClick={handleNavClick}
+                    tabIndex={0}
                   >
                     <Icon style={styles.navIcon} />
                     {item.name}
@@ -553,7 +604,7 @@ const Sidebar = () => {
             })}
           </ul>
         </div>
-
+        
         {/* System Alerts - Real-time Status */}
         <div style={styles.alertSection}>
           <div style={styles.alertBox}>
@@ -569,7 +620,7 @@ const Sidebar = () => {
           </div>
         </div>
       </nav>
-
+      
       {/* Bottom Section */}
       <div style={styles.bottomSection}>
         {user && (
@@ -586,12 +637,13 @@ const Sidebar = () => {
           {bottomItems.map((item) => {
             const Icon = item.icon;
             return (
-              <li key={item.id}>
+              <li key={item.id} style={touchTarget}>
                 {item.onClick ? (
                   <button
                     onClick={item.onClick}
                     style={{
                       ...styles.navItem,
+                      ...touchTarget,
                       ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive),
                       background: 'none',
                       border: 'none',
@@ -601,6 +653,7 @@ const Sidebar = () => {
                     }}
                     onMouseEnter={handleNavItemHover}
                     onMouseLeave={handleNavItemLeave}
+                    tabIndex={0}
                   >
                     <Icon style={styles.navIcon} />
                     {item.name}
@@ -610,10 +663,13 @@ const Sidebar = () => {
                     to={item.href}
                     style={{
                       ...styles.navItem,
+                      ...touchTarget,
                       ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive)
                     }}
                     onMouseEnter={handleNavItemHover}
                     onMouseLeave={handleNavItemLeave}
+                    onClick={handleNavClick}
+                    tabIndex={0}
                   >
                     <Icon style={styles.navIcon} />
                     {item.name}

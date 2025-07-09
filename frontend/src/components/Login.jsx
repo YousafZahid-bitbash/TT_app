@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../api/api';
 
-const HARDCODED_USER = {
-  username: "yousaf",
-  email: "yousaf@example.com",
-  password: "123456"
-};
 
 const Login = () => {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
@@ -17,16 +13,26 @@ const Login = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    if (
-      form.username === HARDCODED_USER.username &&
-      form.email === HARDCODED_USER.email &&
-      form.password === HARDCODED_USER.password
-    ) {
+    // Query the users table for a user with the entered email
+    const { data, error: supabaseError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', form.email)
+      .single();
+
+    if (supabaseError || !data) {
+      setError('Invalid credentials. Please try again.');
+      setLoading(false);
+      return;
+    }
+
+    // For demo: compare plain password (in production, use hash compare)
+    if (form.password === data.password_hash) {
       navigate('/tiktoklogin');
     } else {
       setError('Invalid credentials. Please try again.');
@@ -36,7 +42,11 @@ const Login = () => {
 
   return (
     <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
       minHeight: '100vh',
+      height: '100vh',
       width: '100vw',
       display: 'flex',
       justifyContent: 'center',
@@ -44,12 +54,19 @@ const Login = () => {
       background: 'linear-gradient(120deg, #25f4ee 0%, #fe2c55 50%, #fff1f7 100%)',
       backgroundAttachment: 'fixed',
       overflow: 'hidden',
+      margin: 0,
+      padding: 0,
     }}>
       <style>{`
+        html, body, #root {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
         @media (max-width: 1200px) {
           .login-flex-wrap {
             flex-direction: column !important;
-            gap: 32px !important;
+            gap: 24px !important;
           }
         }
         @media (max-width: 700px) {
@@ -57,6 +74,7 @@ const Login = () => {
             min-width: 90vw !important;
             max-width: 98vw !important;
             min-height: 320px !important;
+            padding: 32px 16px !important;
           }
         }
       `}</style>
@@ -65,12 +83,11 @@ const Login = () => {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        width: '100%',
-        maxWidth: 1200,
+        width: '100vw',
         gap: 56,
         flexWrap: 'wrap',
       }}>
-        {/* Left side image container */}
+        {/* Left side slogan container (replaces image) */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -81,37 +98,39 @@ const Login = () => {
             background: 'rgba(255,255,255,0.25)',
             boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
             borderRadius: '32px',
-            padding: 2,
+            padding: '48px 36px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            minHeight: 630,
-            minWidth: 1100,
-            maxWidth: 1000000,
+            minHeight: 300,
+            minWidth: 400,
+            maxWidth: 600,
+            border: '1.5px solid #e0e0e0',
           }}>
-            <img
-              src={process.env.PUBLIC_URL + '/dash.png'}
-              alt="Dashboard Visual"
-              style={{
-                width: '100%',
-                height: '100%',
-                borderRadius: '24px',
-                boxShadow: '0 4px 24px rgba(31,38,135,0.10)',
-                objectFit: 'cover',
-              }}
-            />
             <div style={{
-              marginTop: 24,
+              fontSize: '2rem',
+              fontWeight: 800,
+              color: '#000', // pure black for maximum readability
               textAlign: 'center',
-              fontSize: '1.25rem',
-              color: '#222',
-              fontWeight: 600,
               letterSpacing: '0.5px',
-              opacity: 0.85,
-              textShadow: '0 2px 8px rgba(31,38,135,0.06)',
+              lineHeight: 1.2,
+              background: 'none',
+              WebkitBackgroundClip: 'unset',
+              WebkitTextFillColor: 'unset',
+              marginBottom: 12,
             }}>
-              Your Dashboard, Visualized
+              Empowering Brands & Creators<br />with Data-Driven Insights
+            </div>
+            <div style={{
+              fontSize: '1.1rem',
+              color: '#000', // pure black for maximum readability
+              opacity: 1,
+              textAlign: 'center',
+              marginTop: 8,
+              fontWeight: 500,
+            }}>
+              Unlock your growth potential with our unified dashboard for performance, inventory, and more.
             </div>
           </div>
         </div>
@@ -146,11 +165,13 @@ const Login = () => {
               fontWeight: 800,
               fontSize: '2.2rem',
               letterSpacing: '-1px',
-              background: 'linear-gradient(90deg, #25f4ee 0%, #010101 40%, #fe2c55 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              color: '#111',
+              background: 'none',
+              WebkitBackgroundClip: 'unset',
+              WebkitTextFillColor: 'unset',
+              textShadow: '0 2px 8px rgba(31,38,135,0.06)',
             }}>
-              Welcome Back
+              Login Page
             </h1>
             {error && (
               <div style={{ backgroundColor: '#fee', border: '1px solid #fcc', padding: '10px', borderRadius: '6px', marginBottom: '20px', color: '#c00', fontWeight: 500 }}>
@@ -158,26 +179,6 @@ const Login = () => {
               </div>
             )}
             <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                value={form.username}
-                onChange={handleChange}
-                required
-                style={{
-                  width: '100%',
-                  marginBottom: 14,
-                  padding: '12px 14px',
-                  borderRadius: 8,
-                  border: '1.5px solid #e0e0e0',
-                  fontSize: 16,
-                  background: 'rgba(255,255,255,0.7)',
-                  outline: 'none',
-                  transition: 'border 0.2s',
-                  boxSizing: 'border-box',
-                }}
-              />
               <input
                 type="email"
                 name="email"
@@ -207,7 +208,7 @@ const Login = () => {
                 required
                 style={{
                   width: '100%',
-                  marginBottom: 22,
+                  marginBottom: 24,
                   padding: '12px 14px',
                   borderRadius: 8,
                   border: '1.5px solid #e0e0e0',
@@ -223,25 +224,25 @@ const Login = () => {
                 disabled={loading}
                 style={{
                   width: '100%',
-                  padding: '16px 0',
-                  borderRadius: '12px',
-                  background: 'linear-gradient(90deg, #25f4ee 0%, #010101 60%, #fe2c55 100%)',
-                  color: 'white',
-                  fontWeight: 700,
-                  fontSize: '1.15rem',
+                  padding: '12px 0',
+                  borderRadius: 8,
                   border: 'none',
-                  boxShadow: '0 2px 12px rgba(31,38,135,0.10)',
-                  letterSpacing: '0.5px',
-                  marginTop: 8,
-                  marginBottom: 8,
+                  background: 'linear-gradient(90deg, #25f4ee 0%, #fe2c55 100%)',
+                  color: '#fff',
+                  fontWeight: 700,
+                  fontSize: 18,
                   cursor: loading ? 'not-allowed' : 'pointer',
-                  transition: 'transform 0.12s',
-                  outline: 'none',
+                  marginBottom: 12,
+                  boxShadow: '0 2px 8px rgba(31,38,135,0.10)',
+                  transition: 'background 0.2s',
                 }}
               >
-                {loading ? 'Processing...' : 'Login'}
+                {loading ? 'Logging in...' : 'Login'}
               </button>
             </form>
+            <div style={{ marginTop: 16, fontSize: 15 }}>
+              Don't have an account? <a href="/signup" style={{ color: '#fe2c55', fontWeight: 700, textDecoration: 'underline', fontSize: 16 }}>Sign up</a>
+            </div>
             <div style={{ marginTop: 32, color: '#222', fontSize: '1rem', opacity: 0.7, fontWeight: 400 }}>
               Please enter your credentials to continue
             </div>

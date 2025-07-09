@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   BarChart3, 
   Users, 
@@ -9,22 +10,30 @@ import {
   Package2,
 } from 'lucide-react';
 
-const AdminSidebar = () => {
+const AdminSidebar = ({ sidebarOpen, setSidebarOpen, isDesktop }) => {
   const [userRole, setUserRole] = useState('Brand Admin');
+  const location = useLocation();
+
+  // Handle navigation click - close sidebar on mobile/tablet
+  const handleNavClick = () => {
+    if (!isDesktop && setSidebarOpen) {
+      setSidebarOpen(false);
+    }
+  };
 
   const styles = {
     sidebar: {
-      width: '256px',
+      width: '100%',
+      maxWidth: '256px',
       backgroundColor: '#ffffff',
       borderRight: '1px solid #e5e7eb',
       height: '100vh',
       display: 'flex',
       flexDirection: 'column',
       fontFamily: 'system-ui, -apple-system, sans-serif',
-      position: 'fixed',
-      left: 0,
-      top: 0,
-      zIndex: 1000
+      position: 'relative',
+      zIndex: 1000,
+      overflowY: 'auto'
     },
     logoSection: {
       padding: '24px',
@@ -268,6 +277,34 @@ const AdminSidebar = () => {
 
   return (
     <div style={styles.sidebar}>
+      {/* Close button for mobile/tablet sidebar */}
+      {!isDesktop && sidebarOpen && (
+        <button
+          onClick={() => setSidebarOpen(false)}
+          style={{
+            position: 'absolute',
+            top: 18,
+            right: 18,
+            zIndex: 2002,
+            background: 'white',
+            border: '1.5px solid #e5e7eb',
+            borderRadius: 8,
+            width: 40,
+            height: 40,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 28,
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+          }}
+          aria-label="Close sidebar"
+          tabIndex={0}
+        >
+          ×
+        </button>
+      )}
+      
       {/* Logo Section */}
       <div style={styles.logoSection}>
         <div style={styles.logoContainer}>
@@ -304,25 +341,26 @@ const AdminSidebar = () => {
               const Icon = item.icon;
               const itemStyle = {
                 ...styles.navItem,
-                ...(item.active ? styles.navItemActive : styles.navItemInactive)
+                ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive)
               };
               
               return (
                 <li key={item.id}>
-                  <a 
-                    href={item.href}
+                  <Link 
+                    to={item.href}
                     style={itemStyle}
                     title={item.description}
-                    data-active={item.active}
+                    data-active={location.pathname === item.href}
                     onMouseEnter={handleNavItemHover}
                     onMouseLeave={handleNavItemLeave}
+                    onClick={handleNavClick}
                   >
                     <Icon style={styles.navIcon} />
                     {item.name}
                     {item.superAdminOnly && (
                       <span style={styles.badge}>SA</span>
                     )}
-                  </a>
+                  </Link>
                 </li>
               );
             })}
@@ -337,15 +375,19 @@ const AdminSidebar = () => {
               const Icon = item.icon;
               return (
                 <li key={item.id}>
-                  <a 
-                    href={item.href}
-                    style={{...styles.navItem, ...styles.navItemInactive}}
+                  <Link 
+                    to={item.href}
+                    style={{
+                      ...styles.navItem, 
+                      ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive)
+                    }}
                     onMouseEnter={handleNavItemHover}
                     onMouseLeave={handleNavItemLeave}
+                    onClick={handleNavClick}
                   >
                     <Icon style={styles.navIcon} />
                     {item.name}
-                  </a>
+                  </Link>
                 </li>
               );
             })}
@@ -360,15 +402,19 @@ const AdminSidebar = () => {
             const Icon = item.icon;
             return (
               <li key={item.id}>
-                <a 
-                  href={item.href}
-                  style={{...styles.navItem, ...styles.navItemInactive}}
+                <Link 
+                  to={item.href}
+                  style={{
+                    ...styles.navItem, 
+                    ...(location.pathname === item.href ? styles.navItemActive : styles.navItemInactive)
+                  }}
                   onMouseEnter={handleNavItemHover}
                   onMouseLeave={handleNavItemLeave}
+                  onClick={handleNavClick}
                 >
                   <Icon style={styles.navIcon} />
                   {item.name}
-                </a>
+                </Link>
               </li>
             );
           })}
